@@ -4,7 +4,9 @@
     <bookmark url="file://$PROJECT_DIR$/common/loss.py" line="53" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="" />
+    <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +39,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/gast_net.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4845">
+            <state relative-caret-position="4921">
               <caret line="259" selection-start-line="259" selection-end-line="259" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
@@ -58,9 +60,9 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="317">
-                <caret line="54" column="3" lean-forward="true" selection-start-line="54" selection-start-column="3" selection-end-line="54" selection-end-column="3" />
+            <state split_layout="SECOND">
+              <first_editor relative-caret-position="906">
+                <caret line="94" column="60" selection-start-line="94" selection-start-column="60" selection-end-line="94" selection-end-column="60" />
               </first_editor>
               <second_editor />
             </state>
@@ -202,7 +204,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/project_pose/hrnet" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -377,17 +379,18 @@
       <workItem from="1594263895613" duration="387000" />
       <workItem from="1594691366133" duration="144000" />
       <workItem from="1594694999167" duration="3386000" />
+      <workItem from="1594701768159" duration="1135000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="101653000" />
+    <option name="totallyTimeSpent" value="102788000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-2" width="1920" height="1202" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17716116" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17929563" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -637,7 +640,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/gast_net.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4845">
+        <state relative-caret-position="4921">
           <caret line="259" selection-start-line="259" selection-end-line="259" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
@@ -654,9 +657,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="317">
-            <caret line="54" column="3" lean-forward="true" selection-start-line="54" selection-start-column="3" selection-end-line="54" selection-end-column="3" />
+        <state split_layout="SECOND">
+          <first_editor relative-caret-position="906">
+            <caret line="94" column="60" selection-start-line="94" selection-start-column="60" selection-end-line="94" selection-end-column="60" />
           </first_editor>
           <second_editor />
         </state>

@@ -6,8 +6,7 @@ We contribute a simple and effective graph attention spatio-temporal convolution
 Local 2nd order and symmetric constraints can mitigate depth ambiguities for these joints with only one first-order neighbor (like ankle \emph{et al.}), while global posture semantics can more effectively combine time information to address self-occlusion. 
 Experiments on two challenging benchmark datasets, Human3.6M and HumanEva-I, show that we achieve 4.1\% and 8.2\% improvements.
 
-* This repository holds the code for the following paper:
-[A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video]().
+* [A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video]().
 
 ### FrameWork
 <img align=center>![GAST-Net Framework](./image/model.png)
@@ -23,7 +22,7 @@ Make sure you have the following dependencies installed before proceeding:
 
 ### Data preparation
 - Download the raw data from [Human3.6M](http://vision.imar.ro/human3.6m) and [HumanEva-I](http://humaneva.is.tue.mpg.de/)
-- Preprocess the dadaset in the same way as like [TCNs[21]](https://github.com/facebookresearch/VideoPose3D/blob/master/DATASETS.md)
+- Preprocess the dadaset in the same way as like [VideoPose3D](https://github.com/facebookresearch/VideoPose3D/blob/master/DATASETS.md)
 - Then put the preprocessed dataset under the data directory
 
        -data\
@@ -59,6 +58,16 @@ To test on HumanEva, run:
 python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject -c checkpoint --evaluate epoch_60.bin
 ```
 
+### Download our pretrained models
+* Google Drive:
+> [27 receptive field model]()
+
+> [81 receptive field model]()
+  
+* Baidu Yun:
+> [27 receptive field model]()
+
+> [81 receptive field model]()
 
 ### Inference in the wild
 Reconstruct 3D pose from 2D keypoint predicted from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
@@ -74,7 +83,7 @@ python reconstruction.py -c epoch_60.bin -k ../keypoints.npz -vi ../sittingdown.
 
 
 ### Reference
-Note that some codes referenced from [VideoPose3D](https://github.com/facebookresearch/VideoPose3D) 
+Note that some codes references [VideoPose3D](https://github.com/facebookresearch/VideoPose3D) 
 
 If you find our paper and repo useful, please cite our paper. Thanks!
 
@@ -82,3 +91,5 @@ If you find our paper and repo useful, please cite our paper. Thanks!
 
 
 ```
+
+* If you have any questions, please fell free to contact us. (junfaliu2019@gmail.com)
