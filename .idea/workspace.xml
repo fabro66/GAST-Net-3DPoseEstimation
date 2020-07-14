@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -62,8 +61,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor>
-                <caret column="107" selection-start-column="2" selection-end-column="107" />
+              <first_editor relative-caret-position="95">
+                <caret line="5" column="143" lean-forward="true" selection-start-line="5" selection-start-column="143" selection-end-line="5" selection-end-column="143" />
               </first_editor>
               <second_editor />
             </state>
@@ -381,12 +380,12 @@
       <workItem from="1594691366133" duration="144000" />
       <workItem from="1594694999167" duration="3386000" />
       <workItem from="1594701768159" duration="2591000" />
-      <workItem from="1594707319018" duration="265000" />
+      <workItem from="1594707319018" duration="875000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104509000" />
+    <option name="totallyTimeSpent" value="105119000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-2" width="1920" height="1202" extended-state="6" />
@@ -667,8 +666,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor>
-            <caret column="107" selection-start-column="2" selection-end-column="107" />
+          <first_editor relative-caret-position="95">
+            <caret line="5" column="143" lean-forward="true" selection-start-line="5" selection-start-column="143" selection-end-line="5" selection-end-column="143" />
           </first_editor>
           <second_editor />
         </state>
