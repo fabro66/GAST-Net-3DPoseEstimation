@@ -59,7 +59,9 @@ Reconstruct 3D pose from 2D keypoint predicted from 2D detector (Mask RCNN, HRNe
 ```
 python reconstruction.py -c epoch_60.bin -k ../keypoints.npz -vi ../sittingdown.mp4 -vo ./output/output_animation.mp4 -kf coco
 ```
+* Reconstructed from YouTube video
+![](./image/Baseball.gif)
 
-![](./image/FallingDown.gif)
+* Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
 ![](./image/WalkApart.gif)
 ![](./image/WalkTowards.gif)
