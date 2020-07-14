@@ -1,5 +1,12 @@
-# GAST-Net
-A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video
+# A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video
+
+>3D pose estimation in video benefits from both temporal and spatial information. Spatiotemporal information can help tackle occlusion and depth ambiguities, which are outstanding problems. Previous methods focused more on time consistency and did not propose an effective way combined with spatial semantics. In this work, we improve the learning of kinematic constraints in the human skeleton; namely posture, 2nd order joint relations, and symmetry. We do this by modeling both local and global spatial information via attention mechanisms. Also, importantly, we carefully design the interleaving of spatial information with temporal information to achieve a synergistic effect.
+We contribute a simple and effective graph attention spatio-temporal convolutional network (GAST-Net) that comprises of interleaved temporal convolutional and graph attention blocks.
+Local 2nd order and symmetric constraints can mitigate depth ambiguities for these joints with only one first-order neighbor (like ankle \emph{et al.}), while global posture semantics can more effectively combine time information to address self-occlusion. 
+Experiments on two challenging benchmark datasets, Human3.6M and HumanEva-I, show that we achieve 4.1\% and 8.2\% improvements.
+
+<img align=center>![GAST-Net Framework](./image/model.png)
+
 
 ### Dependencies
 Make sure you have the following dependencies installed before proceeding:
@@ -24,7 +31,7 @@ Make sure you have the following dependencies installed before proceeding:
             data_2d_humaneva15_detectron_pt_coco.npz
 
 ### Training & Testing
-If you want to reproduce the results of our pretrained models, run the following commands.
+If you want to reproduce the results of our paper, run the following commands.
 
 For Human3.6M:
 ```
@@ -43,13 +50,16 @@ python trainval.py -k cpn_ft_h36m_dbb -arc 3,3,3 -c checkpoint --evaluate epoch_
 
 To test on HumanEva, run:
 ```
-python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject -c checkpoint --evaluate pretrained_humaneva15_detectron.bin
+python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject -c checkpoint --evaluate epoch_60.bin
 ```
 
 
 ### Inference in the wild
-Reconstruct 3D pose from 2D keypoint predicted from 2D detector (Mask RCNN, HrNet and OpenPose et al), and visualize it.
+Reconstruct 3D pose from 2D keypoint predicted from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
 ```
 python reconstruction.py -c epoch_60.bin -k ../keypoints.npz -vi ../sittingdown.mp4 -vo ./output/output_animation.mp4 -kf coco
 ```
 
+![](./image/FallingDown.gif)
+![](./image/WalkApart.gif)
+![](./image/WalkTowards.gif)
