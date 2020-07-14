@@ -9,6 +9,7 @@ Experiments on two challenging benchmark datasets, Human3.6M and HumanEva-I, sho
 ### FrameWork
 <img align=center>![GAST-Net Framework](./image/model.png)
 
+![](./image/WalkApart.gif)
 
 ### Dependencies
 Make sure you have the following dependencies installed before proceeding:
@@ -66,7 +67,7 @@ python reconstruction.py -c epoch_60.bin -k ../keypoints.npz -vi ../sittingdown.
 
 * Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
 ![](./image/WalkTowards.gif)
-![](./image/WalkApart.gif)
+
 
 
 ### Reference
