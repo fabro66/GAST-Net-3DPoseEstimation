@@ -60,6 +60,14 @@ python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/
 ```
 
 ### Download our pretrained models
+```
+cd root_path
+mkdir checkpoint output
+```
+    -checkpoint\
+                27_frame_model.bin
+                81_frame_model.bin
+
 * Google Drive:
 > [27 receptive field model](https://drive.google.com/file/d/1vh29QoxIfNT4Roqw1SuHDxxKex53xlOB/view?usp=sharing)
 
