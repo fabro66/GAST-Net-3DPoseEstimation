@@ -255,6 +255,7 @@ class SpatioTemporalModelOptimized1f(SpatioTemporalModelBase):
 if __name__ == "__main__":
     import torch
     import numpy as np
+    import torchsummary
     from common.skeleton import Skeleton
     from common.graph_utils import adj_mx_from_skeleton
 
@@ -272,6 +273,12 @@ if __name__ == "__main__":
     model = model.cuda()
 
     model_params = 0
+
+    with open('../checkpoint/parameters_name.txt', 'w') as fw:
+        for name, _ in model.named_parameters():
+            fw.write('%s\n'%name)
+
+    exit(0)
     for parameter in model.parameters():
         model_params += parameter.numel()
 

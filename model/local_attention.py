@@ -12,7 +12,7 @@ class SemCHGraphConv(nn.Module):
     Semantic channel-wise graph convolution layer
     """
 
-    def __init__(self, in_features, out_features, adj, bias=True):
+    def __init__(self, in_features, out_features, adj, bias=False):
         super(SemCHGraphConv, self).__init__()
         self.in_features = in_features
         self.out_features = out_features

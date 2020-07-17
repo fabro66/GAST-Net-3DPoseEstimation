@@ -147,3 +147,6 @@ static
 
 # ignore file.npz
 *.npz
+
+# ignore video.mp4
+*.mp4

@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch
 import numpy as np
+import json
+import cv2
+import os
 import argparse
 
 from tool.mpii_coco_h36m import coco_h36m, mpii_h36m
@@ -54,13 +57,54 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Training script')
 
     # General arguments
-    parser.add_argument('-c', '--checkpoint', type=str, metavar='NAME', help='The file path of model weight')
-    parser.add_argument('-k', '--keypoints', type=str, metavar='NAME', help='The file path of 2D keypoints')
-    parser.add_argument('-vi', '--video-path', type=str, metavar='NAME', help='The input video path')
-    parser.add_argument('-vo', '--viz-output', type=str, metavar='NAME', help='The output path of animation')
-    parser.add_argument('-kf', '--kpts-format', type=str, default='h36m', metavar='NAME', help='The format of 2D keypoints')
+    parser.add_argument('-f', '--frames', type=int, default=27, metavar='NAME',
+                        help='The number of receptive fields')
+    parser.add_argument('-w', '--weight', type=str, default='27_frame_model_new.bin', metavar='NAME',
+                        help='The name of model weight')
+    parser.add_argument('-k', '--keypoints-file', type=str, default='./data/keypoints/baseball.json', metavar='NAME',
+                        help='The path of keypoints file')
+    parser.add_argument('-vi', '--video-path', type=str, default='./data/video/baseball.mp4', metavar='NAME',
+                        help='The path of input video')
+    parser.add_argument('-vo', '--viz-output', type=str, default='./output/baseball.mp4', metavar='NAME',
+                        help='The path of output video')
+    parser.add_argument('-kf', '--kpts-format', type=str, default='coco', metavar='NAME',
+                        help='The format of 2D keypoints')
 
     return parser
+
+
+def load_json(file_path):
+    with open(file_path, 'r') as fr:
+        video_info = json.load(fr)
+
+    label = video_info['label']
+    label_index = video_info['label_index']
+
+    num_person = 2
+    num_joints = 17
+    num_frames = video_info['data'][-1]['frame_index']
+    keypoints = np.zeros((num_person, num_frames, num_joints, 2), dtype=np.float32)
+    scores = np.zeros((num_person, num_frames, num_joints), dtype=np.float32)
+
+    for frame_info in video_info['data']:
+        frame_index = frame_info['frame_index']
+
+        for index, skeleton_info in enumerate(frame_info['skeleton']):
+            pose = skeleton_info['pose']
+            score = skeleton_info['score']
+            bbox = skeleton_info['bbox']
+
+            if len(bbox) == 0 or index+1 > num_person:
+                continue
+
+            pose = np.asarray(pose, dtype=np.float32)
+            score = np.asarray(score, dtype=np.float32)
+            score = score.reshape(-1)
+
+            keypoints[index, frame_index-1] = pose
+            scores[index, frame_index-1] = score
+
+    return keypoints, scores, label, label_index
 
 
 def evaluate(test_generator, model_pos, return_predictions=False):
@@ -88,42 +132,64 @@ def evaluate(test_generator, model_pos, return_predictions=False):
                 return predicted_3d_pos.squeeze(0).cpu().numpy()
 
 
-def reconstruction(chk_file, kps_file, viz_output, video_path=None, kpts_format='h36m'):
+def reconstruction(args):
     """
     Generate 3D poses from 2D keypoints detected from video, and visualize it
         :param chk_file: The file path of model weight
         :param kps_file: The file path of 2D keypoints
         :param viz_output: The output path of animation
         :param video_path: The input video path
-        :param kpts_format: The format of 2D keypoints, like MSCOCO, MPII, H36M. The default format is H36M
+        :param kpts_format: The format of 2D keypoints, like MSCOCO, MPII, H36M, OpenPose. The default format is H36M
     """
 
     print('Loading 2D keypoints ...')
-    data = np.load(kps_file, allow_pickle=True)
+    keypoints, scores, _, _ = load_json(args.keypoints_file)
 
-    # keypoints: (T, N, C)
-    keypoints = data["keypoints"]
-    img_h_w = data["img_h_w"]
-    high, width = img_h_w[:2]
+    # Loading only one person's keypoints
+    if len(keypoints.shape) == 4:
+        keypoints = keypoints[0]
+    assert len(keypoints.shape) == 3
 
     # Transform the keypoints format from different dataset (MSCOCO, MPII) to h36m format
-    if kpts_format == 'coco':
-        keypoints = coco_h36m(keypoints)
-    elif kpts_format == 'mpii':
-        keypoints = mpii_h36m(keypoints)
+    if args.kpts_format == 'coco':
+        keypoints, valid_frames = coco_h36m(keypoints)
+    elif args.kpts_format == 'mpii':
+        keypoints, valid_frames = mpii_h36m(keypoints)
+    elif args.kpts_format == 'openpose':
+        # Convert 'Openpose' format to MSCOCO
+        order_coco = [i for i in range(17) if i != 1]
+        keypoints = keypoints[:order_coco]
+        keypoints, valid_frames = coco_h36m(keypoints)
     else:
-        assert kpts_format == 'h36m'
+        valid_frames = np.where(np.sum(keypoints.reshape(-1, 34), axis=1) != 0)[0]
+        assert args.kpts_format == 'h36m'
+
+    # Get the width and height of video
+    cap = cv2.VideoCapture(args.video_path)
+    width = int(round(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
+    height = int(round(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
     # normalize keypoints
-    keypoints = normalize_screen_coordinates(keypoints[..., :2], w=width, h=high)
+    input_keypoints = normalize_screen_coordinates(keypoints[..., :2], w=width, h=height)
 
-    model_pos = SpatioTemporalModel(adj, 17, 2, 17, filter_widths=[3, 3, 3], channels=128, dropout=0.05)
+    if args.frames == 27:
+        filter_widths = [3, 3, 3]
+        channels = 128
+    elif args.frames == 81:
+        filter_widths = [3, 3, 3, 3]
+        channels = 64
+    else:
+        filter_widths = [3, 3, 3, 3, 3]
+        channels = 32
+
+    model_pos = SpatioTemporalModel(adj, 17, 2, 17, filter_widths=filter_widths, channels=channels, dropout=0.05)
 
     if torch.cuda.is_available():
         model_pos = model_pos.cuda()
 
     # load trained model
-    print('Loading checkpoint', chk_file)
+    print('Loading checkpoint', args.weight)
+    chk_file = os.path.join('./checkpoint', args.weight)
     checkpoint = torch.load(chk_file, map_location=lambda storage, loc: storage)
     model_pos.load_state_dict(checkpoint['model_pos'])
 
@@ -132,22 +198,23 @@ def reconstruction(chk_file, kps_file, viz_output, video_path=None, kpts_format=
     causal_shift = 0
 
     print('Reconstructing ...')
-    input_keypoints = keypoints.copy()
-    gen = UnchunkedGenerator(None, None, [input_keypoints],
+    gen = UnchunkedGenerator(None, None, [input_keypoints[valid_frames]],
                              pad=pad, causal_shift=causal_shift, augment=True,
                              kps_left=kps_left, kps_right=kps_right, joints_left=joints_left, joints_right=joints_right)
     prediction = evaluate(gen, model_pos, return_predictions=True)
-
     prediction = camera_to_world(prediction, R=rot, t=0)
 
     # We don't have the trajectory, but at least we can rebase the height
     prediction[:, :, 2] -= np.min(prediction[:, :, 2])
 
+    prediction_new = np.zeros((*input_keypoints.shape[:-1], 3), dtype=np.float32)
+    prediction_new[valid_frames] = prediction
+
     print('Rendering ...')
-    anim_output = {'Reconstruction': prediction}
+    anim_output = {'Reconstruction': prediction_new}
     render_animation(keypoints, keypoints_metadata, anim_output, h36m_skeleton, 25, 3000,
-                     np.array(70., dtype=np.float32), viz_output, limit=-1, downsample=1, size=5,
-                     input_video_path=video_path, viewport=(width, high), input_video_skip=0)
+                     np.array(70., dtype=np.float32), args.viz_output, limit=-1, downsample=1, size=5,
+                     input_video_path=args.video_path, viewport=(width, height), input_video_skip=0)
 
 
 if __name__ == '__main__':
@@ -159,4 +226,4 @@ if __name__ == '__main__':
     # video_path = '.../sittingdown.mp4'
     # viz_output = '.../output_animation.mp4'
 
-    reconstruction(args.checkpoint, args.keypoints, args.viz_output, args.video_path, args.kpts_format)
+    reconstruction(args)

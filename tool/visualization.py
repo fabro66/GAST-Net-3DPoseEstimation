@@ -103,7 +103,7 @@ def render_animation(keypoints, keypoints_metadata, poses, skeleton, fps, bitrat
     ax_3d = []
     lines_3d = []
     trajectories = []
-    radius = 1.7
+    radius = 1.5
     for index, (title, data) in enumerate(poses.items()):
         ax = fig.add_subplot(1, 1 + len(poses), index+2, projection='3d')
         ax.view_init(elev=15., azim=azim)
@@ -187,7 +187,7 @@ def render_animation(keypoints, keypoints_metadata, poses, skeleton, fps, bitrat
                     pos = poses[n][i]
                     lines_3d[n].append(ax.plot([pos[j, 0], pos[j_parent, 0]],
                                                [pos[j, 1], pos[j_parent, 1]],
-                                               [pos[j, 2], pos[j_parent, 2]], zdir='z', c=col))
+                                               [pos[j, 2], pos[j_parent, 2]], linewidth=3, zdir='z', c=col))
 
             points = ax_in.scatter(*keypoints[i].T, 10, color=colors_2d, edgecolors='white', zorder=10)
 

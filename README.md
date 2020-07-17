@@ -61,19 +61,26 @@ python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/
 
 ### Download our pretrained models
 * Google Drive:
-> [27 receptive field model]()
+> [27 receptive field model](https://drive.google.com/file/d/1vh29QoxIfNT4Roqw1SuHDxxKex53xlOB/view?usp=sharing)
 
-> [81 receptive field model]()
+> [81 receptive field model](https://drive.google.com/file/d/12n-CyDhImxwHmakfA24n5Nz7J6QXj83f/view?usp=sharing)
   
-* Baidu Yun:
-> [27 receptive field model]()
+* Baidu Yun(Extract code: kuxf):
+> [27 receptive field model](https://pan.baidu.com/s/1tLCCm5l7izffziaNERGp0w)
 
-> [81 receptive field model]()
+> [81 receptive field model](https://pan.baidu.com/s/1tLCCm5l7izffziaNERGp0w)
 
 ### Inference in the wild
-Reconstruct 3D pose from 2D keypoint predicted from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
+Reconstruct 3D pose from 2D keypoint estimated from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
+
+If you want to reproduce the baseball example, please run the following code:
 ```
-python reconstruction.py -c epoch_60.bin -k ../keypoints.npz -vi ../sittingdown.mp4 -vo ./output/output_animation.mp4 -kf coco
+python reconstruction.py
+```
+
+or run more detailed parameter settings:
+```
+python reconstruction.py -f 27 -w 27_frames_model.bin -k ./data/keypoints/baseball.json -vi ./data/video/baseball.mp4 -vo ./output/baseball_reconstruction.mp4 -kf coco
 ```
 * Reconstructed from YouTube video
 ![](./image/Baseball.gif)

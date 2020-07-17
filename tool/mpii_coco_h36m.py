@@ -30,7 +30,9 @@ def coco_h36m(keypoints):
     # half body: the joint of ankle and knee equal to hip
     # keypoints_h36m[:, [2, 3]] = keypoints_h36m[:, [1, 1]]
     # keypoints_h36m[:, [5, 6]] = keypoints_h36m[:, [4, 4]]
-    return keypoints_h36m
+
+    valid_frames = np.where(np.sum(keypoints_h36m.reshape(-1, 34), axis=1) != 0)[0]
+    return keypoints_h36m, valid_frames
 
 
 h36m_mpii_order = [3, 2, 1, 4, 5, 6, 0, 8, 9, 10, 16, 15, 14, 11, 12, 13]
@@ -44,6 +46,8 @@ def mpii_h36m(keypoints):
     keypoints_h36m[:, h36m_mpii_order] = keypoints
     # keypoints_h36m[:, 7] = np.mean(keypoints[:, 6:8], axis=1, dtype=np.float32)
     keypoints_h36m[:, 7] = np.mean(keypoints[:, lr_hip_shouler], axis=1, dtype=np.float32)
-    return keypoints_h36m
+
+    valid_frames = np.where(np.sum(keypoints_h36m.reshape(-1, 34), axis=1) != 0)[0]
+    return keypoints_h36m, valid_frames
 
 
