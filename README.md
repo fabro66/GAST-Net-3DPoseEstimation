@@ -6,7 +6,7 @@ We contribute a simple and effective graph attention spatio-temporal convolution
 Local 2nd order and symmetric constraints can mitigate depth ambiguities for these joints with only one first-order neighbor (like ankle et al.), while global posture semantics can more effectively combine time information to address self-occlusion. 
 Experiments on two challenging benchmark datasets, Human3.6M and HumanEva-I, show that we achieve 4.1\% and 8.2\% improvements.
 
-* [A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video]().
+* [A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video](https://arxiv.org/abs/2003.14179).
 * Project Website: [http://www.juanrojas.net/gast/](http://www.juanrojas.net/gast/) 
 
 ### FrameWork
@@ -104,8 +104,12 @@ Note that some codes references [VideoPose3D](https://github.com/facebookresearc
 If you find our paper and repo useful, please cite our paper. Thanks!
 
 ```
-
-
+@article{liu2020a,
+  title={A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video},
+  author={Liu, Junfa and Liang, Zhijun and Li, Yihui and Guan, Yisheng and Rojas, Juan},
+  journal={arXiv preprint arXiv:2003.14179},
+  year={2020}
+}
 ```
 
 * If you have any questions, please fell free to contact us. (junfaliu2019@gmail.com)
