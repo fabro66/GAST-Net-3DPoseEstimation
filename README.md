@@ -88,7 +88,7 @@ python reconstruction.py
 
 or run more detailed parameter settings:
 ```
-python reconstruction.py -f 27 -w 27_frames_model.bin -k ./data/keypoints/baseball.json -vi ./data/video/baseball.mp4 -vo ./output/baseball_reconstruction.mp4 -kf coco
+python reconstruction.py -f 27 -w 27_frame_model.bin -k ./data/keypoints/baseball.json -vi ./data/video/baseball.mp4 -vo ./output/baseball_reconstruction.mp4 -kf coco
 ```
 * Reconstructed from YouTube video
 ![](./image/Baseball.gif)
