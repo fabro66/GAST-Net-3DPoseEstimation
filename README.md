@@ -3,7 +3,7 @@
 ### News
 * [2020/08/14] We achieve real-time 3D pose estimation. [[video]](https://www.bilibili.com/video/BV18f4y197R7/)
 * [2020/10/15] We achieve real-time online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)
-* [2020/11/16] We release codes on how to generate 3D poses and animation from a custom video. [[INFERENCE.md]](./INFERENCE_EN.md)
+* [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [[INFERENCE_EN.md]](./INFERENCE_EN.md)
 ### Introduction
 Spatio-temporal information is key to resolve occlusion and depth ambiguity in 3D pose estimation. Previous methods have focused on either temporal contexts or local-to-global architectures that embed fixed-length spatio-temporal information. 
 To date, there have not been effective proposals to simultaneously and flexibly capture varying spatio-temporal sequences and effectively achieves real-time 3D pose estimation.
@@ -18,11 +18,13 @@ Experiments on two challenging benchmark datasets (Human3.6M and HumanEva-I) and
 * Project Website: [http://www.juanrojas.net/gast/](http://www.juanrojas.net/gast/) 
 
 ### FrameWork
-<img align=center>![GAST-Net Framework](./image/framework.png)
+<img align=center>
+<img src="./image/framework.png"/>
+</div>
 
 
 ### Real-time estimation
-<img align=center>![Realtime Estimation](./image/RealtimeEstimation.gif)
+![Realtime Estimation](./image/RealtimeEstimation.gif)
 
 ### Dependencies
 Make sure you have the following dependencies installed before proceeding:

@@ -1,16 +1,15 @@
 # Inference in the wild 
 Language: [[English]](INFERENCE_EN.md) [[中文]](INFERENCE_CH.md)
 
-In this short tutorial, we show how to run our model on arbitrary videos and visualize the predictions. 
-Note that this feature is only provided for experimentation/research purposes and presents some limitations, 
-as this repository is meant to provide a reference implementation of the approach described in the paper (not production-ready code for inference in the wild).
+In this short tutorial, we show how to run our model on arbitrary videos and visualize the predictions. Note that this feature is only provided for experimentation/research purposes and presents some limitations, as this repository is meant to provide a reference implementation of the approach described in the paper (not production-ready code for inference in the wild).
 
-- Our script have achieved single and double 3D pose estimation on custom videos. 
-This repository provides an API to generate 3D joint coordinates and rendering animation.
+- Our script have achieved single and double-person 3D pose estimation on custom videos. This repository provides an API to generate 3D joint coordinates and rendering animation. You can add other detector and 2D pose estimation methods based on our scripts. You can also apply it to other high-level tasks, such as [skeleton-based action recognition](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition).
 
 - Pipeline: We adopt YOLOv3 and SORT for human detection and tracking, HRNet for 2D pose
 estimation, and GAST-Net for 2D-to-3D pose reconstruction.
-
+<dev align=center>
+<img src="./image/input.png"/ width="200">  <img src="./image/detection_tracking.png" width="200"/>  <img src="./image/pose_estimation.png" width="200"/>  <img src="./image/reconstruction.png" width="200"/>
+</div>
 
 ## Download pretrained model
 - Prepare YOLOv3 pretrained model：
@@ -52,9 +51,6 @@ Download GAST-Net pretrained model[[27_frame_model.bin]](https://drive.google.co
 ```
     python gen_skes.py -v baseball.mp4 -np 1 --animation
 ```
--- The result can be found in **output** dir：
-
-![baseball](./image/Baseball.gif)
 
 - Double-person 3D pose estimation：
 ```
@@ -62,7 +58,7 @@ Download GAST-Net pretrained model[[27_frame_model.bin]](https://drive.google.co
 ```
 
 ![baseball](./image/WalkApart.gif)
-
+-- The result can be found in **output** dir.
 
 ## Generating 3D joint coordinates
 - Single-person 3D pose estimation：

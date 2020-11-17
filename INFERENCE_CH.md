@@ -1,12 +1,14 @@
 # RGB视频中生成3D姿态
 语言: [[English]](INFERENCE_EN.md) [[中文]](INFERENCE_CH.md)
 
-本教程，我们将展示如何在RGB视频上进行人体3D姿态估计并可视化。3D姿态重构建采用我们提出的GAST-Net模型，具体细节可见[文章](https://arxiv.org/abs/2003.14179)内容。 
-此教程提供的代码仅适用于实验研究，存在一定的局限性，暂不适合实际的落地应用。
+本教程，我们将展示如何在RGB视频上进行人体3D姿态估计并可视化。3D姿态重构建采用我们提出的GAST-Net模型，具体细节可见[文章](https://arxiv.org/abs/2003.14179)内容。此教程提供的代码仅适用于实验研究，存在一定的局限性，暂不适合实际的落地应用。
 
 - 功能：可实现RGB视频中的单人和双人3D姿态估计，输出基于人体盆骨基点的3D关节坐标，或者生成动图。
 
 - 工作原理：首先采用YOLOv3和SORT对视频中的行人进行检测和跟踪，然后利用HRNet对检测的行人进行2D姿态估计，最后通过GAST-Net回归生成3D姿态。
+<dev align=center>
+<img src="./image/input.png"/ width="200">  <img src="./image/detection_tracking.png" width="200"/>  <img src="./image/pose_estimation.png" width="200"/>  <img src="./image/reconstruction.png" width="200"/>
+</div>
 
 ## 模型下载
 
@@ -49,17 +51,12 @@
 ```
     python gen_skes.py -v baseball.mp4 -np 1 --animation
 ```
--- 生成的动图放在output文件夹中，效果如下：
-
-![baseball](./image/Baseball.gif)
-
 - 双人3D姿态估计：
 ```
     python gen_skes.py -v apart.avi -np 2 --animation
 ```
--- 生成的动图放在output文件夹中，效果如下：
-
 ![baseball](./image/WalkApart.gif)
+-- 生成的动图默认放在output文件夹中
 
 
 ## 3D姿态骨架文件生成
