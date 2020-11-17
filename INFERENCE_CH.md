@@ -6,9 +6,9 @@
 - 功能：可实现RGB视频中的单人和双人3D姿态估计，输出基于人体盆骨基点的3D关节坐标，或者生成动图。
 
 - 工作原理：首先采用YOLOv3和SORT对视频中的行人进行检测和跟踪，然后利用HRNet对检测的行人进行2D姿态估计，最后通过GAST-Net回归生成3D姿态。
-<center class="half">
-<img src="./image/input.png"/ width="200"><img src="./image/detection_tracking.png" width="200"/><img src="./image/pose_estimation.png" width="200"/><img src="./image/reconstruction.png" width="200"/>
-</center>
+<div align="center>
+    <img src="./image/input.png" width="250" alt="Input">      <img src="./image/detection_tracking.png" width="250" alt="detection and tracking">      <img src="./image/pose_estimation.png" width="250" alt="2D pose estimation">      <img src="./image/reconstruction.png" width="250" alt="3D reconstruction">
+</div>
 
 ## 模型下载
 
@@ -56,7 +56,8 @@
     python gen_skes.py -v apart.avi -np 2 --animation
 ```
 ![baseball](./image/WalkApart.gif)
--- 生成的动图默认放在output文件夹中
+
+-- 生成的动图默认放在**output**文件夹中
 
 
 ## 3D姿态骨架文件生成
