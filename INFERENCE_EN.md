@@ -3,7 +3,7 @@ Language: [[English]](INFERENCE_EN.md) [[中文]](INFERENCE_CH.md)
 
 In this short tutorial, we show how to run our model on arbitrary videos and visualize the predictions. Note that this feature is only provided for experimentation/research purposes and presents some limitations, as this repository is meant to provide a reference implementation of the approach described in the paper (not production-ready code for inference in the wild).
 
-- Our script have achieved single and double-person 3D pose estimation on custom videos. This repository provides an API to generate 3D joint coordinates and rendering animation. You can add other detector and 2D pose estimation methods based on our scripts. You can also apply it to other high-level tasks, such as [skeleton-based action recognition](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition).
+- Our script have achieved single and Two-person 3D pose estimation on custom videos. This repository provides an API to generate 3D joint coordinates and rendering animation. You can add other detector and 2D pose estimation methods based on our scripts. You can also apply it to other high-level tasks, such as [skeleton-based action recognition](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition).
 
 - Pipeline: We adopt YOLOv3 and SORT for human detection and tracking, HRNet for 2D pose
 estimation, and GAST-Net for 2D-to-3D pose reconstruction.
@@ -52,7 +52,7 @@ Download GAST-Net pretrained model[[27_frame_model.bin]](https://drive.google.co
     python gen_skes.py -v baseball.mp4 -np 1 --animation
 ```
 
-- Double-person 3D pose estimation：
+- Two-person 3D pose estimation：
 ```
     python gen_skes.py -v apart.avi -np 2 --animation
 ```
