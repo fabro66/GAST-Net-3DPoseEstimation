@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/INFERENCE_CH.md" beforeDir="false" afterPath="$PROJECT_DIR$/INFERENCE_CH.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/INFERENCE_EN.md" beforeDir="false" afterPath="$PROJECT_DIR$/INFERENCE_EN.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -119,8 +117,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="532">
-                <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+              <first_editor relative-caret-position="-399">
+                <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
               </first_editor>
               <second_editor />
             </state>
@@ -131,8 +129,8 @@
         <entry file="file://$PROJECT_DIR$/INFERENCE_EN.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="95">
-                <caret line="5" column="352" selection-start-line="5" selection-start-column="352" selection-end-line="5" selection-end-column="352" />
+              <first_editor relative-caret-position="209">
+                <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
               </first_editor>
               <second_editor />
             </state>
@@ -578,12 +576,12 @@
       <workItem from="1605447853443" duration="4798000" />
       <workItem from="1605488034709" duration="12983000" />
       <workItem from="1605507978482" duration="12708000" />
-      <workItem from="1605578852835" duration="4038000" />
+      <workItem from="1605578852835" duration="4353000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="191697000" />
+    <option name="totallyTimeSpent" value="192012000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-2" width="1920" height="1202" extended-state="6" />
@@ -962,8 +960,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="532">
-            <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+          <first_editor relative-caret-position="-399">
+            <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
           </first_editor>
           <second_editor />
         </state>
@@ -972,8 +970,8 @@
     <entry file="file://$PROJECT_DIR$/INFERENCE_EN.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="95">
-            <caret line="5" column="352" selection-start-line="5" selection-start-column="352" selection-end-line="5" selection-end-column="352" />
+          <first_editor relative-caret-position="209">
+            <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
           </first_editor>
           <second_editor />
         </state>
