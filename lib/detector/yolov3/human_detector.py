@@ -68,6 +68,7 @@ def arg_parse():
     parser.add_argument('-wf', '--weight-file', type=str, default=chk_root + 'yolov3/yolov3.weights', help='The path'
                         'of model weight file')
     parser.add_argument('-cf', '--cfg-file', type=str, default=cur_dir + '/cfg/yolov3.cfg', help='weight file')
+    parser.add_argument('-a', '--animation', action='store_true', help='output animation')
     parser.add_argument('-v', '--video', type=str, default='camera', help='The input video path')
     parser.add_argument('-i', '--image', type=str, default=cur_dir + '/data/dog-cycle-car.png',
                         help='The input video path')

@@ -48,6 +48,8 @@ def parse_args():
                         help='The input dimension of the detected image')
     parser.add_argument('--thred-score', type=float, default=0.70,
                         help='The threshold of object Confidence')
+    parser.add_argument('-a', '--animation', action='store_true',
+                        help='output animation')
     parser.add_argument('-np', '--num-person', type=int, default=1,
                         help='The maximum number of estimated poses')
     parser.add_argument("-v", "--video", type=str, default='camera',
