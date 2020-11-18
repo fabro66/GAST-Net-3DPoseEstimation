@@ -10,8 +10,8 @@ from tqdm import tqdm
 
 sys.path.insert(0, osp.dirname(osp.realpath(__file__)))
 from tools.utils import get_path
-from model.gast_net import SpatioTemporalModel
-from imp_model.gast_net import SpatioTemporalModelOptimized1f
+from model.gast_net import SpatioTemporalModel, SpatioTemporalModelOptimized1f
+# from imp_model.gast_net import SpatioTemporalModelOptimized1f
 from common.skeleton import Skeleton
 from common.graph_utils import adj_mx_from_skeleton
 from common.generators import *
