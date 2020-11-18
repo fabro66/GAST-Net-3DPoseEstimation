@@ -15,14 +15,14 @@ estimation, and GAST-Net for 2D-to-3D pose reconstruction.
 ## Download pretrained model
 - Prepare YOLOv3 pretrained model：
 ``` cd root_path
-    cd checkpoints
+    cd checkpoint
     mkdir yolov3
     wget https://pjreddie.com/media/files/yolov3.weights
 ```
 
 
 - Prepare HRNet pretrained model:
-``` cd checkpoints
+``` cd checkpoint
     mkdir hrnet
     cd hrnet
     mkdir pose_coco
@@ -31,14 +31,14 @@ Download HRNet pretrained model[[pose_hrnet_w48_384x288.pth]](https://github.com
 
 
 - Prepare GAST-Net pretrained model:
-``` cd checkpoints
+``` cd checkpoint
     mkdir gastnet
 ```
 Download GAST-Net pretrained model[[27_frame_model.bin]](https://drive.google.com/file/d/1vh29QoxIfNT4Roqw1SuHDxxKex53xlOB/view?usp=sharing)
 
 ```
     ${root_path}
-    -- checkpoints
+    -- checkpoint
         |-- yolov3
             |-- yolov3.weights
         |-- hrnet

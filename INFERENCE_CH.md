@@ -21,14 +21,14 @@
 
 - 创建YOLOv3预训练模型仓库，下载预训练模型：
 ``` cd root_path
-    cd checkpoints
+    cd checkpoint
     mkdir yolov3
     wget https://pjreddie.com/media/files/yolov3.weights
 ```
 
 
 - 创建HRNet预训练模型仓库，下载预训练模型：
-``` cd checkpoints
+``` cd checkpoint
     mkdir hrnet
     cd hrnet
     mkdir pose_coco
@@ -37,14 +37,14 @@
 
 
 - 创建GAST-Net预训练模型仓库，下载预训练模型：
-``` cd checkpoints
+``` cd checkpoint
     mkdir gastnet
 ```
 下载GAST-Net预训练模型[[27_frame_model.bin]](https://pan.baidu.com/s/1tLCCm5l7izffziaNERGp0w),提取密码:kuxf，并放进gastnet文件夹中
 
 ```
     ${root_path}
-    -- checkpoints
+    -- checkpoint
         |-- yolov3
             |-- yolov3.weights
         |-- hrnet

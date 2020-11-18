@@ -4,10 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/common/loss.py" line="90" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/lib/detector/yolov3/human_detector.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/detector/yolov3/human_detector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pose/hrnet/pose_estimation/gen_kpts.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pose/hrnet/pose_estimation/gen_kpts.py" afterDir="false" />
-    </list>
+    <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/pose/hrnet/pose_estimation/gen_kpts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="40" column="92" lean-forward="true" selection-start-line="40" selection-start-column="92" selection-end-line="40" selection-end-column="92" />
+            <state relative-caret-position="388">
+              <caret line="31" column="45" lean-forward="true" selection-start-line="31" selection-start-column="45" selection-end-line="31" selection-end-column="45" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -336,7 +333,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/project_action/GAST-Net-3DPoseEstimation" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -571,16 +568,15 @@
       <workItem from="1605507978482" duration="12708000" />
       <workItem from="1605578852835" duration="6943000" />
       <workItem from="1605617546991" duration="2719000" />
-      <workItem from="1605700460878" duration="1271000" />
+      <workItem from="1605700460878" duration="2096000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="198592000" />
+    <option name="totallyTimeSpent" value="199417000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-2" width="1920" height="1202" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19797225" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -964,8 +960,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/pose/hrnet/pose_estimation/gen_kpts.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="40" column="92" lean-forward="true" selection-start-line="40" selection-start-column="92" selection-end-line="40" selection-end-column="92" />
+        <state relative-caret-position="388">
+          <caret line="31" column="45" lean-forward="true" selection-start-line="31" selection-start-column="45" selection-end-line="31" selection-end-column="45" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
