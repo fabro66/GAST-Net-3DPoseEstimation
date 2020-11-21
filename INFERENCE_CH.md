@@ -50,8 +50,8 @@
         |-- hrnet
             |-- pose_coco
                 |-- pose_hrnet_w48_384x288.pth
-            |-- gastnet
-                |-- 27_frame_model.bin
+        |-- gastnet
+            |-- 27_frame_model.bin
 ```
 ## 3D姿态动图生成
 - 单人3D姿态估计：
