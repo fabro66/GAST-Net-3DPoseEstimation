@@ -8,8 +8,8 @@ In this short tutorial, we show how to run our model on arbitrary videos and vis
 - Pipeline: We adopt YOLOv3 and SORT for human detection and tracking, HRNet for 2D pose
 estimation, and GAST-Net for 2D-to-3D pose reconstruction.
 
-<div align="center>
-    <img src="./image/input.png" width="200" alt="Input">   <img src="./image/detection_tracking.png" width="200" alt="detection and tracking">   <img src="./image/pose_estimation.png" width="200" alt="2D pose estimation">   <img src="./image/reconstruction.png" width="200" alt="3D reconstruction">
+<div align=center>
+    <img src="./image/detection_tracking.png" width="200" alt="detection and tracking">   <img src="./image/pose_estimation.png" width="200" alt="2D pose estimation">   <img src="./image/reconstruction.png" width="200" alt="3D reconstruction">
 </div>
 
 ## Download pretrained model

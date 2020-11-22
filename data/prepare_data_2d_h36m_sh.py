@@ -11,7 +11,7 @@ import sys
 sys.path.append('../')
 from common.h36m_dataset import Human36mDataset
 from common.camera import world_to_camera, project_to_2d, image_coordinates
-from tool.utils import wrap
+from tools.utils import wrap
 
 output_filename_pt = 'data_2d_h36m_sh_pt_mpii'
 output_filename_ft = 'data_2d_h36m_sh_ft_h36m'
