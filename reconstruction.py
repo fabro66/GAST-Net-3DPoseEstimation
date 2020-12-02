@@ -157,8 +157,8 @@ def reconstruction(args):
         keypoints, valid_frames = mpii_h36m(keypoints)
     elif args.kpts_format == 'openpose':
         # Convert 'Openpose' format to MSCOCO
-        order_coco = [i for i in range(17) if i != 1]
-        keypoints = keypoints[:order_coco]
+        order_coco = [i for i in range(18) if i != 1]
+        keypoints = keypoints[:, order_coco]
         keypoints, valid_frames = coco_h36m(keypoints)
     else:
         valid_frames = np.where(np.sum(keypoints.reshape(-1, 34), axis=1) != 0)[0]

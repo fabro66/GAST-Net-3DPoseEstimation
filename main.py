@@ -197,45 +197,14 @@ def create_model(args, dataset, poses_valid_2d):
 
 
 def load_weight(args, model_pos_train, model_pos):
-    mutil_gpu = False
-    gpu = False
-
-    # Multi-gpu training
-    if torch.cuda.device_count() > 1:
-        print("The number of GPU: {}".format(torch.cuda.device_count()))
-        model_pos = model_pos.cuda()
-        model_pos_train = model_pos_train.cuda()
-        model_pos = nn.DataParallel(model_pos, device_ids=[0, 1])
-        model_pos_train = nn.DataParallel(model_pos_train, device_ids=[0, 1])
-        mutil_gpu = True
-    elif torch.cuda.is_available():
-        model_pos = model_pos.cuda()
-        model_pos_train = model_pos_train.cuda()
-        gpu = True
-    else:
-        cpu = True
-
     checkpoint = dict()
     if args.resume or args.evaluate:
-        if mutil_gpu or gpu:
-            chk_filename = os.path.join(args.checkpoint, args.resume if args.resume else args.evaluate)
-            print("Loading checkpoint", chk_filename)
-            checkpoint = torch.load(chk_filename)
-            print("This model was trained for {} epochs".format(checkpoint["epoch"]))
-            model_pos_train.load_state_dict(checkpoint["model_pos"])
-            model_pos.load_state_dict(checkpoint["model_pos"])
-        else:
-            new_state_dict = OrderedDict()
-            chk_filename = os.path.join(args.checkpoint, args.resume if args.resume else args.evaluate)
-            print("Loading checkpoint", chk_filename)
-            checkpoint = torch.load(chk_filename, map_location=lambda storage, loc: storage)
-            print("This model was trained for {} epochs".format(checkpoint["epoch"]))
-
-            for k, v in checkpoint["model_pos"].items():
-                name = k[7:]  # remove "module"
-                new_state_dict[name] = v
-            model_pos_train.load_state_dict(new_state_dict)
-            model_pos.load_state_dict(new_state_dict)
+        chk_filename = os.path.join(args.checkpoint, args.resume if args.resume else args.evaluate)
+        print("Loading checkpoint", chk_filename)
+        checkpoint = torch.load(chk_filename)
+        # print("This model was trained for {} epochs".format(checkpoint["epoch"]))
+        model_pos_train.load_state_dict(checkpoint["model_pos"])
+        model_pos.load_state_dict(checkpoint["model_pos"])
 
     return model_pos_train, model_pos, checkpoint
 

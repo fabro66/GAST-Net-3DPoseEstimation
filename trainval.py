@@ -51,6 +51,18 @@ if not args.evaluate:
 
 # creating model
 model_pos_train, model_pos, pad, causal_shift = create_model(args, dataset, poses_valid_2d)
+
+# Multi-gpu training
+if torch.cuda.device_count() > 1:
+    print("The number of GPU: {}".format(torch.cuda.device_count()))
+    model_pos = model_pos.cuda()
+    model_pos_train = model_pos_train.cuda()
+    model_pos = nn.DataParallel(model_pos, device_ids=[0, 1])
+    model_pos_train = nn.DataParallel(model_pos_train, device_ids=[0, 1])
+elif torch.cuda.is_available():
+    model_pos = model_pos.cuda()
+    model_pos_train = model_pos_train.cuda()
+
 # Loading weight
 model_pos_train, model_pos, checkpoint = load_weight(args, model_pos_train, model_pos)
 
