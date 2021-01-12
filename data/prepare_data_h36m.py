@@ -10,7 +10,7 @@ import sys
 sys.path.append('../')
 from common.h36m_dataset import Human36mDataset
 from common.camera import world_to_camera, project_to_2d, image_coordinates
-from tool.utils import wrap
+from tools.utils import wrap
 
 output_filename = 'data_3d_h36m'
 output_filename_2d = 'data_2d_h36m_gt'

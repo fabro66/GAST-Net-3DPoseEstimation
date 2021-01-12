@@ -2,7 +2,7 @@
 
 ### News
 * [2020/08/14] We achieve real-time 3D pose estimation. [[video]](https://www.bilibili.com/video/BV18f4y197R7/)
-* [2020/10/15] We achieve real-time online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)
+* [2020/10/15] We achieve online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)[[code]](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition)
 * [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [[INFERENCE_EN.md]](./INFERENCE_EN.md)
 ### Introduction
 Spatio-temporal information is key to resolve occlusion and depth ambiguity in 3D pose estimation. Previous methods have focused on either temporal contexts or local-to-global architectures that embed fixed-length spatio-temporal information. 
@@ -25,6 +25,9 @@ Experiments on two challenging benchmark datasets (Human3.6M and HumanEva-I) and
 
 ### Real-time estimation
 ![Realtime Estimation](./image/RealtimeEstimation.gif)
+
+### Half-body estimation
+![Half-body estimation](./image/half_body_estimation.gif)
 
 ### Dependencies
 Make sure you have the following dependencies installed before proceeding:
@@ -53,12 +56,12 @@ If you want to reproduce the results of our paper, run the following commands.
 
 For Human3.6M:
 ```
-python trainval.py -e 60 -k cpn_ft_h36m_dbb -arc 3,3,3 -drop 0.05 -b 128
+python trainval.py -e 80 -k cpn_ft_h36m_dbb -arc 3,3,3 -drop 0.05 -b 128
 ```
 
 For HumanEva:
 ```
-python trainval.py -d humaneva15 -e 200 -k detectron_pt_coco -d humaneva15 -arc 3,3,3 -drop 0.5 -b 32 -lr 0.98 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject
+python trainval.py -d humaneva15 -e 200 -k detectron_pt_coco -d humaneva15 -arc 3,3,3 -drop 0.5 -b 32 -lrd 0.98 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject
 ```
 
 To test on Human3.6M, run:

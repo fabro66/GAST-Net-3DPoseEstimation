@@ -156,7 +156,7 @@ def generate_skeletons(video='', rf=27, output_animation=False, num_person=1, ab
     else:
         print('Saving 3D reconstruction...')
         output_npz = './output/' + video.split('/')[-1].split('.')[0] + '.npz'
-        np.savez_compressed(output_root+output_npz, reconstruction=prediction)
+        np.savez_compressed(output_npz, reconstruction=prediction)
         print('Completing saving...')
 
 

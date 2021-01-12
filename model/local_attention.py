@@ -80,6 +80,12 @@ class LocalGraph(nn.Module):
             joints_left = [2, 3, 4, 8, 9, 10]
             joints_right = [5, 6, 7, 11, 12, 13]
 
+        # Human3.6M including toe keypoints
+        elif num_joints == 19:
+            store_2 = [3, 4, 7, 8, 12, 15, 18]
+            joints_left = [5, 6, 7, 8, 13, 14, 15]
+            joints_right = [1, 2, 3, 4, 16, 17, 18]
+
         else:
             raise KeyError("The dimension of adj matrix is wrong!")
 
