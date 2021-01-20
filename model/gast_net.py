@@ -11,7 +11,6 @@ class GraphAttentionBlock(nn.Module):
         
         hid_dim = output_dim
         self.relu = nn.ReLU(inplace=True)
-        self.adj = adj.matrix_power(2)
 
         self.local_graph_layer = LocalGraph(adj, input_dim, hid_dim, p_dropout)
         self.global_graph_layer = MultiGlobalGraph(adj, input_dim, input_dim//4, dropout=p_dropout)
