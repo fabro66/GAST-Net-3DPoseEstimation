@@ -1,9 +1,9 @@
 # A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video (GAST-Net)
 
 ### News
-* [2020/08/14] We achieve real-time 3D pose estimation. [[video]](https://www.bilibili.com/video/BV18f4y197R7/)
-* [2020/10/15] We achieve online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)[[code]](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition)
 * [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [[INFERENCE_EN.md]](./INFERENCE_EN.md)
+* [2020/10/15] We achieve online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)[[code]](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition)
+* [2020/08/14] We achieve real-time 3D pose estimation. [[video]](https://www.bilibili.com/video/BV18f4y197R7/)
 ### Introduction
 Spatio-temporal information is key to resolve occlusion and depth ambiguity in 3D pose estimation. Previous methods have focused on either temporal contexts or local-to-global architectures that embed fixed-length spatio-temporal information. 
 To date, there have not been effective proposals to simultaneously and flexibly capture varying spatio-temporal sequences and effectively achieves real-time 3D pose estimation.
@@ -71,7 +71,7 @@ python trainval.py -k cpn_ft_h36m_dbb -arc 3,3,3 -c checkpoint --evaluate epoch_
 
 To test on HumanEva, run:
 ```
-python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject -c checkpoint --evaluate epoch_60.bin
+python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject -c checkpoint --evaluate epoch_200.bin
 ```
 
 ### Download our pretrained models
