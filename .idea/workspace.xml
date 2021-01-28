@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd7acae4-446e-42bf-a622-01013260463d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/h36m_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/h36m_dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/RealtimeEstimation.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/image/half_body_estimation.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/gast_net.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/gast_net.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/local_attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/local_attention.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/sem_graph_conv.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sem_graph_conv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reconstruction.py" beforeDir="false" afterPath="$PROJECT_DIR$/reconstruction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/mpii_coco_h36m.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/mpii_coco_h36m.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,8 +55,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="209">
-                <caret line="11" column="103" selection-start-line="11" selection-start-column="103" selection-end-line="11" selection-end-column="103" />
+              <first_editor relative-caret-position="703">
+                <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
               </first_editor>
               <second_editor />
             </state>
@@ -592,12 +582,12 @@
       <workItem from="1611455064787" duration="2448000" />
       <workItem from="1611578829263" duration="1939000" />
       <workItem from="1611802433013" duration="7322000" />
-      <workItem from="1611813327328" duration="1008000" />
+      <workItem from="1611813327328" duration="1316000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="261119000" />
+    <option name="totallyTimeSpent" value="261427000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-2" width="1920" height="1202" extended-state="6" />
@@ -1023,8 +1013,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="209">
-            <caret line="11" column="103" selection-start-line="11" selection-start-column="103" selection-end-line="11" selection-end-column="103" />
+          <first_editor relative-caret-position="703">
+            <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
           </first_editor>
           <second_editor />
         </state>

@@ -29,6 +29,7 @@ Make sure you have the following dependencies installed before proceeding:
 - PyTorch >= 1.0.1
 - matplotlib
 - numpy
+- ffmpeg
 
 ### Data preparation
 - Download the raw data from [Human3.6M](http://vision.imar.ro/human3.6m) and [HumanEva-I](http://humaneva.is.tue.mpg.de/)
