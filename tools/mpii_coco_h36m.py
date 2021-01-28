@@ -8,6 +8,10 @@ h36m_coco_order = [9, 11, 14, 12, 15, 13, 16, 4, 1, 5, 2, 6, 3]
 coco_order = [0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 spple_keypoints = [10, 8, 0, 7]
 
+scores_h36m_toe_oeder = [1, 2, 3, 5, 6, 7, 11, 13, 14, 15, 16, 17, 18]
+kpts_h36m_toe_order = [0, 1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+scores_coco_order = [12, 14, 16, 11, 13, 15, 0, 5, 7, 9, 6, 8, 10]
+
 h36m_mpii_order = [3, 2, 1, 4, 5, 6, 0, 8, 9, 10, 16, 15, 14, 11, 12, 13]
 mpii_order = [i for i in range(16)]
 lr_hip_shouler = [2, 3, 12, 13]
@@ -53,3 +57,19 @@ def mpii_h36m(keypoints):
     return keypoints_h36m, valid_frames
 
 
+def coco_h36m_toe_format(keypoints):
+    assert len(keypoints.shape) == 3
+    temporal = keypoints.shape[0]
+
+    new_kpts = np.zeros((temporal, 19, 2), dtype=np.float32)
+
+    # convert body+foot keypoints
+    coco_body_kpts = keypoints[:, :17].copy()
+    h36m_body_kpts, _ = coco_h36m(coco_body_kpts)
+    new_kpts[:, kpts_h36m_toe_order] = h36m_body_kpts
+    new_kpts[:, 4] = np.mean(keypoints[:, [20, 21]], axis=1, dtype=np.float32)
+    new_kpts[:, 8] = np.mean(keypoints[:, [17, 18]], axis=1, dtype=np.float32)
+
+    valid_frames = np.where(np.sum(new_kpts.reshape(-1, 38), axis=-1) != 0)[0]
+
+    return new_kpts,  valid_frames

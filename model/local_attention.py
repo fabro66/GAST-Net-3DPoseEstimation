@@ -102,13 +102,11 @@ class LocalGraph(nn.Module):
                     adj_sym[i][joints_left[index]] = 1.0
 
         adj_1st_order = adj.matrix_power(1)
-        # distal_joints = [3, 6, 10, 13, 16]
         for i in np.arange(num_joints):
             if i in distal_joints:
                 adj_1st_order[i] = 0
 
         adj_2nd_order = adj.matrix_power(2)
-        # distal_joints = [3, 6, 10, 13, 16]
         for i in np.arange(num_joints):
             if i not in distal_joints:
                 adj_2nd_order[i] = 0

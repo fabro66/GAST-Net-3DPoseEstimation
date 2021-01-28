@@ -7,7 +7,7 @@ import cv2
 import os
 import argparse
 
-from tools.mpii_coco_h36m import coco_h36m, mpii_h36m
+from tools.mpii_coco_h36m import coco_h36m, mpii_h36m, coco_h36m_toe_format
 from common.skeleton import Skeleton
 from common.graph_utils import adj_mx_from_skeleton
 from common.camera import normalize_screen_coordinates, camera_to_world
@@ -16,14 +16,15 @@ from model.gast_net import *
 from tools.visualization import render_animation
 
 
-h36m_skeleton = Skeleton(parents=[-1, 0, 1, 2, 0, 4, 5, 0, 7, 8, 9, 8, 11, 12, 8, 14, 15],
-                         joints_left=[6, 7, 8, 9, 10, 16, 17, 18, 19, 20, 21, 22, 23],
-                         joints_right=[1, 2, 3, 4, 5, 24, 25, 26, 27, 28, 29, 30, 31])
-adj = adj_mx_from_skeleton(h36m_skeleton)
-joints_left, joints_right = [4, 5, 6, 11, 12, 13], [1, 2, 3, 14, 15, 16]
-kps_left, kps_right = [4, 5, 6, 11, 12, 13], [1, 2, 3, 14, 15, 16]
+# h36m_skeleton = Skeleton(parents=[-1, 0, 1, 2, 0, 4, 5, 0, 7, 8, 9, 8, 11, 12, 8, 14, 15],
+#                          joints_left=[4, 5, 6, 11, 12, 13],
+#                          joints_right=[1, 2, 3, 14, 15, 16])
+# adj = adj_mx_from_skeleton(h36m_skeleton)
+# body_joints_left, body_joints_right = [4, 5, 6, 11, 12, 13], [1, 2, 3, 14, 15, 16]
+# body_kps_left, body_kps_right = [4, 5, 6, 11, 12, 13], [1, 2, 3, 14, 15, 16]
+# keypoints_metadata = {'keypoints_symmetry': (body_joints_left, body_joints_right), 'layout_name': 'Human3.6M', 'num_joints': 17}
 rot = np.array([0.14070565, -0.15007018, -0.7552408, 0.62232804], dtype=np.float32)
-keypoints_metadata = {'keypoints_symmetry': (joints_left, joints_right), 'layout_name': 'Human3.6M', 'num_joints': 17}
+
 
 mpii_metadata = {
     'layout_name': 'mpii',
@@ -61,6 +62,8 @@ def parse_args():
                         help='The number of receptive fields')
     parser.add_argument('-w', '--weight', type=str, default='27_frame_model.bin', metavar='NAME',
                         help='The name of model weight')
+    parser.add_argument('-n', '--num-joints', type=int, default=17, metavar='NAME',
+                        help='The number of joints')
     parser.add_argument('-k', '--keypoints-file', type=str, default='./data/keypoints/baseball.json', metavar='NAME',
                         help='The path of keypoints file')
     parser.add_argument('-vi', '--video-path', type=str, default='./data/video/baseball.mp4', metavar='NAME',
@@ -73,18 +76,47 @@ def parse_args():
     return parser
 
 
-def load_json(file_path):
+def get_joints_info(num_joints):
+    # Body+toe keypoints
+    if num_joints == 19:
+        joints_left = [5, 6, 7, 8, 13, 14, 15]
+        joints_right = [1, 2, 3, 4, 16, 17, 18]
+
+        h36m_skeleton = Skeleton(parents=[-1, 0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 10, 13, 14, 10, 16, 17],
+                                 joints_left=[5, 6, 7, 8, 13, 14, 15],
+                                 joints_right=[1, 2, 3, 4, 16, 17, 18])
+    # Body keypoints
+    else:
+        joints_left = [4, 5, 6, 11, 12, 13]
+        joints_right = [1, 2, 3, 14, 15, 16]
+
+        h36m_skeleton = Skeleton(parents=[-1, 0, 1, 2, 0, 4, 5, 0, 7, 8, 9, 8, 11, 12, 8, 14, 15],
+                                 joints_left=[4, 5, 6, 11, 12, 13],
+                                 joints_right=[1, 2, 3, 14, 15, 16])
+
+    keypoints_metadata = {'keypoints_symmetry': (joints_left, joints_right), 'layout_name': 'Human3.6M',
+                          'num_joints': num_joints}
+
+    return joints_left, joints_right, h36m_skeleton, keypoints_metadata
+
+
+def load_json(file_path, num_joints, num_person=2):
     with open(file_path, 'r') as fr:
         video_info = json.load(fr)
+
+    # Loading whole-body keypoints including body(17)+hand(42)+foot(6)+facial(68) joints
+    # 2D Whole-body human pose estimation paper: https://arxiv.org/abs/2007.11858
+    if num_joints == 19:
+        num_joints_revise = 133
+    else:
+        num_joints_revise = 17
 
     label = video_info['label']
     label_index = video_info['label_index']
 
-    num_person = 2
-    num_joints = 17
     num_frames = video_info['data'][-1]['frame_index']
-    keypoints = np.zeros((num_person, num_frames, num_joints, 2), dtype=np.float32)
-    scores = np.zeros((num_person, num_frames, num_joints), dtype=np.float32)
+    keypoints = np.zeros((num_person, num_frames, num_joints_revise, 2), dtype=np.float32)
+    scores = np.zeros((num_person, num_frames, num_joints_revise), dtype=np.float32)
 
     for frame_info in video_info['data']:
         frame_index = frame_info['frame_index']
@@ -104,10 +136,14 @@ def load_json(file_path):
             keypoints[index, frame_index-1] = pose
             scores[index, frame_index-1] = score
 
-    return keypoints, scores, label, label_index
+    if num_joints != num_joints_revise:
+        # body(17) + foot(6) = 23
+        return keypoints[:, :, :23], scores[:, :, :23], label, label_index
+    else:
+        return keypoints, scores, label, label_index
 
 
-def evaluate(test_generator, model_pos, return_predictions=False):
+def evaluate(test_generator, model_pos, joints_left, joints_right, return_predictions=False):
     
     with torch.no_grad():
         model_pos.eval()
@@ -142,8 +178,13 @@ def reconstruction(args):
         :param kpts_format: The format of 2D keypoints, like MSCOCO, MPII, H36M, OpenPose. The default format is H36M
     """
 
+    # Getting joint information
+    joints_left, joints_right, h36m_skeleton, keypoints_metadata = get_joints_info(args.num_joints)
+    kps_left, kps_right = joints_left, joints_right
+    adj = adj_mx_from_skeleton(h36m_skeleton)
+
     print('Loading 2D keypoints ...')
-    keypoints, scores, _, _ = load_json(args.keypoints_file)
+    keypoints, scores, _, _ = load_json(args.keypoints_file, args.num_joints)
 
     # Loading only one person's keypoints
     if len(keypoints.shape) == 4:
@@ -160,6 +201,8 @@ def reconstruction(args):
         order_coco = [i for i in range(18) if i != 1]
         keypoints = keypoints[:, order_coco]
         keypoints, valid_frames = coco_h36m(keypoints)
+    elif args.kpts_format == 'wholebody':
+        keypoints, valid_frames = coco_h36m_toe_format(keypoints)
     else:
         valid_frames = np.where(np.sum(keypoints.reshape(-1, 34), axis=1) != 0)[0]
         assert args.kpts_format == 'h36m'
@@ -182,7 +225,8 @@ def reconstruction(args):
         filter_widths = [3, 3, 3, 3, 3]
         channels = 32
 
-    model_pos = SpatioTemporalModel(adj, 17, 2, 17, filter_widths=filter_widths, channels=channels, dropout=0.05)
+    model_pos = SpatioTemporalModel(adj, args.num_joints, 2, args.num_joints, filter_widths=filter_widths,
+                                    channels=channels, dropout=0.05)
 
     if torch.cuda.is_available():
         model_pos = model_pos.cuda()
@@ -201,7 +245,7 @@ def reconstruction(args):
     gen = UnchunkedGenerator(None, None, [input_keypoints[valid_frames]],
                              pad=pad, causal_shift=causal_shift, augment=True,
                              kps_left=kps_left, kps_right=kps_right, joints_left=joints_left, joints_right=joints_right)
-    prediction = evaluate(gen, model_pos, return_predictions=True)
+    prediction = evaluate(gen, model_pos, joints_left, joints_right, return_predictions=True)
     prediction = camera_to_world(prediction, R=rot, t=0)
 
     # We don't have the trajectory, but at least we can rebase the height

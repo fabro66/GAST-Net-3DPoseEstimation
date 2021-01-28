@@ -258,17 +258,17 @@ if __name__ == "__main__":
     from common.skeleton import Skeleton
     from common.graph_utils import adj_mx_from_skeleton
 
-    h36m_skeleton = Skeleton(parents=[-1, 0, 1, 2, 0, 4, 5, 0, 7, 8, 9, 8, 11, 12, 8, 14, 15],
-                             joints_left=[6, 7, 8, 9, 10, 16, 17, 18, 19, 20, 21, 22, 23],
-                             joints_right=[1, 2, 3, 4, 5, 24, 25, 26, 27, 28, 29, 30, 31])
+    h36m_skeleton = Skeleton(parents=[-1, 0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 10, 13, 14, 10, 16, 17],
+                             joints_left=[5, 6, 7, 8, 13, 14, 15],
+                             joints_right=[1, 2, 3, 4, 16, 17, 18])
 
     humaneva_skeleton = Skeleton(parents=[-1, 0, 1, 2, 3, 1, 5, 6, 0, 8, 9, 0, 11, 12, 1],
                                  joints_left=[2, 3, 4, 8, 9, 10],
                                  joints_right=[5, 6, 7, 11, 12, 13])
 
     adj = adj_mx_from_skeleton(h36m_skeleton)
-    model = SpatioTemporalModel(adj, num_joints_in=17, in_features=2, num_joints_out=17,
-                                filter_widths=[3, 3, 3, 3], channels=64)
+    model = SpatioTemporalModel(adj, num_joints_in=19, in_features=2, num_joints_out=19,
+                                filter_widths=[3, 3, 3], channels=128)
     model = model.cuda()
 
     model_params = 0
@@ -277,7 +277,7 @@ if __name__ == "__main__":
         model_params += parameter.numel()
 
     print('INFO: Trainable parameter count:', model_params)
-    input = torch.randn(2, 81, 17, 2)
+    input = torch.randn(2, 27, 19, 2)
     input = input.cuda()
 
     # summary(model, (27, 15, 2))

@@ -1,6 +1,7 @@
 # A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video (GAST-Net)
 
 ### News
+* [2021/01/28] We update GAST-Net to able to generate 19-joint human poses including body and foot joints. [[DEMO]](./image/Baseball_body_foot.gif)
 * [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [[INFERENCE_EN.md]](./INFERENCE_EN.md)
 * [2020/10/15] We achieve online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)[[code]](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition)
 * [2020/08/14] We achieve real-time 3D pose estimation. [[video]](https://www.bilibili.com/video/BV18f4y197R7/)
@@ -21,13 +22,6 @@ Experiments on two challenging benchmark datasets (Human3.6M and HumanEva-I) and
 <img align=center>
 <img src="./image/framework.png"/>
 </div>
-
-
-### Real-time estimation
-![Realtime Estimation](./image/RealtimeEstimation.gif)
-
-### Half-body estimation
-![Half-body estimation](./image/half_body_estimation.gif)
 
 ### Dependencies
 Make sure you have the following dependencies installed before proceeding:
@@ -83,17 +77,21 @@ mkdir gastnet
 ```
     -checkpoint\gastnet\
                 27_frame_model.bin
-                81_frame_model.bin
+                27_frame_model_toe.bin
 
 * Google Drive:
 > [27 receptive field model](https://drive.google.com/file/d/1vh29QoxIfNT4Roqw1SuHDxxKex53xlOB/view?usp=sharing)
 
+> [27 receptive field model_toe](https://drive.google.com/file/d/117I7mXi_cFlMpSqJ-DARIkiYdvyaLoeR/view?usp=sharing)
+
 > [81 receptive field model](https://drive.google.com/file/d/12n-CyDhImxwHmakfA24n5Nz7J6QXj83f/view?usp=sharing)
   
-* Baidu Yun(Extract code: kuxf):
-> [27 receptive field model](https://pan.baidu.com/s/1tLCCm5l7izffziaNERGp0w)
+* Baidu Yun(Extract code: ietc):
+> [27 receptive field model](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A)
 
-> [81 receptive field model](https://pan.baidu.com/s/1tLCCm5l7izffziaNERGp0w)
+> [27 receptive field model_toe](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A)
+
+> [81 receptive field model](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A)
 
 ### Reconstruct 3D poses from 2D keypoints
 Reconstruct 3D poses from 2D keypoints estimated from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
@@ -103,13 +101,13 @@ If you want to reproduce the baseball example, please run the following code:
 python reconstruction.py
 ```
 
-or run more detailed parameter settings:
+If you want to reproduce the baseball example (including body and toe joints), please run the following code:
 ```
-python reconstruction.py -f 27 -w 27_frame_model.bin -k ./data/keypoints/baseball.json -vi ./data/video/baseball.mp4 -vo ./output/baseball_reconstruction.mp4 -kf coco
+python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/baseball_wholebody.json -kf wholebody
 ```
 * Reconstructed from YouTube video
 ![](./image/Baseball.gif)
-
+![](./image/Baseball_body_foot.gif)
 * Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
 ![](./image/WalkApart.gif)
 

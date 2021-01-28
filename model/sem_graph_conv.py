@@ -63,19 +63,25 @@ class LocalGraph(nn.Module):
 
         # Human3.6M
         if num_joints == 17:
-            store_2 = [3, 6, 10, 13, 16]
+            distal_joints = [3, 6, 10, 13, 16]
             joints_left = [4, 5, 6, 11, 12, 13]
             joints_right = [1, 2, 3, 14, 15, 16]
 
+        # Human3.6m with toe keypoitns
+        elif num_joints == 19:
+            distal_joints = [3, 4, 7, 8, 12, 15, 18]
+            joints_left = [5, 6, 7, 8, 13, 14, 15]
+            joints_right = [1, 2, 3, 4, 16, 17, 18]
+
         # Human3.6M detected from Stacked Hourglass
         elif num_joints == 16:
-            store_2 = [3, 6, 9, 12, 15]
+            distal_joints = [3, 6, 9, 12, 15]
             joints_left = [4, 5, 6, 10, 11, 12]
             joints_right = [1, 2, 3, 13, 14, 15]
 
         # HumanEva
         elif num_joints == 15:
-            store_2 = [4, 7, 10, 13]
+            distal_joints = [4, 7, 10, 13]
             joints_left = [2, 3, 4, 8, 9, 10]
             joints_right = [5, 6, 7, 11, 12, 13]
 
@@ -95,19 +101,19 @@ class LocalGraph(nn.Module):
                     index = joints_right.index(i)
                     adj_sym[i][joints_left[index]] = 1.0
 
-        adj_1 = adj.matrix_power(1)
-        # store_2 = [3, 6, 10, 13, 16]
+        adj_1st_order = adj.matrix_power(1)
+        # distal_joints = [3, 6, 10, 13, 16]
         for i in np.arange(num_joints):
-            if i in store_2:
-                adj_1[i] = 0
+            if i in distal_joints:
+                adj_1st_order[i] = 0
 
-        adj_2 = adj.matrix_power(2)
-        # store_2 = [3, 6, 10, 13, 16]
+        adj_2nd_order = adj.matrix_power(2)
+        # distal_joints = [3, 6, 10, 13, 16]
         for i in np.arange(num_joints):
-            if i not in store_2:
-                adj_2[i] = 0
+            if i not in distal_joints:
+                adj_2nd_order[i] = 0
 
-        adj_con = adj_1 + adj_2
+        adj_con = adj_1st_order + adj_2nd_order
 
         self.gcn_sym = SemGraphConv(input_dim, output_dim, adj_sym)
         self.bn_1 = nn.BatchNorm2d(output_dim, momentum=0.1)
@@ -119,7 +125,7 @@ class LocalGraph(nn.Module):
         self.cat_bn = nn.BatchNorm2d(output_dim, momentum=0.1)
 
         if dropout is not None:
-            self.dropout = nn.Dropout(dropout)
+            self.dropout = nn.Dropout2d(dropout)
         else:
             self.dropout = None
 
