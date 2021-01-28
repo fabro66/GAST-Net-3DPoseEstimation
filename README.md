@@ -113,6 +113,7 @@ python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/bas
 <div align=center>
 <img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball_body_foot.gif" width="640" alt="19-joint 3D human pose estimation">
 </div>
+
 * Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
 
 <div align=center>

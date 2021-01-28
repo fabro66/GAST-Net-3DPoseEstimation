@@ -55,8 +55,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="437">
-                <caret line="110" column="147" lean-forward="true" selection-start-line="110" selection-end-line="110" selection-end-column="147" />
+              <first_editor relative-caret-position="507">
+                <caret line="118" column="18" lean-forward="true" selection-start-line="118" selection-start-column="18" selection-end-line="118" selection-end-column="18" />
               </first_editor>
               <second_editor />
             </state>
@@ -306,6 +306,11 @@
               <item name="GAST-Net" type="b2602c69:ProjectViewProjectNode" />
               <item name="GAST-Net" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="GAST-Net" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GAST-Net" type="462c0819:PsiDirectoryNode" />
+              <item name="image" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="GAST-Net" type="b2602c69:ProjectViewProjectNode" />
@@ -582,12 +587,12 @@
       <workItem from="1611455064787" duration="2448000" />
       <workItem from="1611578829263" duration="1939000" />
       <workItem from="1611802433013" duration="7322000" />
-      <workItem from="1611813327328" duration="2839000" />
+      <workItem from="1611813327328" duration="3252000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="262950000" />
+    <option name="totallyTimeSpent" value="263363000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="-2" width="1920" height="1202" extended-state="6" />
@@ -1013,8 +1018,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="437">
-            <caret line="110" column="147" lean-forward="true" selection-start-line="110" selection-end-line="110" selection-end-column="147" />
+          <first_editor relative-caret-position="507">
+            <caret line="118" column="18" lean-forward="true" selection-start-line="118" selection-start-column="18" selection-end-line="118" selection-end-column="18" />
           </first_editor>
           <second_editor />
         </state>
