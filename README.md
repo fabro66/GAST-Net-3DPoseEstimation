@@ -23,6 +23,12 @@ Experiments on two challenging benchmark datasets (Human3.6M and HumanEva-I) and
 <img src="./image/framework.png"/>
 </div>
 
+* Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
+
+<div align=center>
+<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/WalkApart.gif" alt=" Two-person 3D human pose estimation"/>
+</div>
+
 ### Dependencies
 Make sure you have the following dependencies installed before proceeding:
 - Python >=3.6
@@ -69,7 +75,7 @@ To test on HumanEva, run:
 python trainval.py -k detectron_pt_coco -arc 3,3,3 -str Train/S1,Train/S2,Train/S3 -ste Validate/S1,Validate/S2,Validate/S3 -a Walk,Jog,Box --by-subject -c checkpoint --evaluate epoch_200.bin
 ```
 
-### Download our pretrained models
+### Download our pretrained models from model zoo([GoogleDrive](https://drive.google.com/drive/folders/194Btr2L2FJ7jWaH4c1mpNysvKZOcEb1K?usp=sharing) or [BaiduDrive (ietc)](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A))
 ```
 cd root_path
 mkdir checkpoint output
@@ -79,20 +85,6 @@ mkdir gastnet
     -checkpoint\gastnet\
                 27_frame_model.bin
                 27_frame_model_toe.bin
-
-* Google Drive:
-> [27 receptive field model](https://drive.google.com/file/d/1vh29QoxIfNT4Roqw1SuHDxxKex53xlOB/view?usp=sharing)
-
-> [27 receptive field model_toe](https://drive.google.com/file/d/117I7mXi_cFlMpSqJ-DARIkiYdvyaLoeR/view?usp=sharing)
-
-> [81 receptive field model](https://drive.google.com/file/d/12n-CyDhImxwHmakfA24n5Nz7J6QXj83f/view?usp=sharing)
-  
-* Baidu Yun(Extract code: ietc):
-> [27 receptive field model](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A)
-
-> [27 receptive field model_toe](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A)
-
-> [81 receptive field model](https://pan.baidu.com/s/1AVPEtpuwLqYjDC3f9Ita0A)
 
 ### Reconstruct 3D poses from 2D keypoints
 Reconstruct 3D poses from 2D keypoints estimated from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
@@ -112,12 +104,6 @@ python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/bas
 </div>
 <div align=center>
 <img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball_body_foot.gif" width="640" alt="19-joint 3D human pose estimation">
-</div>
-
-* Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
-
-<div align=center>
-<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/WalkApart.gif" alt=" Two-person 3D human pose estimation"/>
 </div>
 
 ### Inference a custom video
