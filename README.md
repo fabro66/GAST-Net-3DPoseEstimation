@@ -107,9 +107,12 @@ If you want to reproduce the baseball example (including body and toe joints), p
 python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/baseball_wholebody.json -kf wholebody
 ```
 * Reconstructed from YouTube video
+
 ![](./image/Baseball.gif)
+
 ![](./image/Baseball_body_foot.gif)
 * Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
+
 ![](./image/WalkApart.gif)
 
 ### Inference a custom video
