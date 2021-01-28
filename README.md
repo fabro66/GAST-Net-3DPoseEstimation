@@ -107,14 +107,17 @@ If you want to reproduce the baseball example (19 joints, including body and toe
 python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/baseball_wholebody.json -kf wholebody
 ```
 * Reconstructed from YouTube video
-
-<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball.gif" width="640" alt="17-joint 3D human pose estimation">
-
+<div align=center>
+<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball.gif" width="640" alt="17-joint 3D human pose estimation"/>
+</div>
+<div align=center>
 <img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball_body_foot.gif" width="640" alt="19-joint 3D human pose estimation">
-
+</div>
 * Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
 
-![](./image/WalkApart.gif)
+<div align=center>
+<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/WalkApart.gif" alt=" Two-person 3D human pose estimation"/>
+</div>
 
 ### Inference a custom video
 We provide a tutorial on how to run our model on custom videos. See [INFERENCE.md](./INFERENCE_EN.md) for more details.
