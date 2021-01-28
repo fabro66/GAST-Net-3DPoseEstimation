@@ -1,10 +1,10 @@
 # A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video (GAST-Net)
 
 ### News
-* [2021/01/28] We update GAST-Net to able to generate 19-joint human poses including body and foot joints. [[DEMO]](./image/Baseball_body_foot.gif)
-* [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [[INFERENCE_EN.md]](./INFERENCE_EN.md)
-* [2020/10/15] We achieve online 3D skeleton-based action recognition with a single RGB camera. [[video]](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)[[code]](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition)
-* [2020/08/14] We achieve real-time 3D pose estimation. [[video]](https://www.bilibili.com/video/BV18f4y197R7/)
+* [2021/01/28] We update GAST-Net to able to generate 19-joint human poses including body and foot joints. [**[DEMO]**](./image/Baseball_body_foot.gif)
+* [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [**[INFERENCE_EN.md]**](./INFERENCE_EN.md)
+* [2020/10/15] We achieve online 3D skeleton-based action recognition with a single RGB camera. [**[video]**](https://www.bilibili.com/video/BV1e54y1i7iT/?spm_id_from=333.788.videocard.0)[**[code]**](https://github.com/fabro66/Online-Skeleton-based-Action-Recognition)
+* [2020/08/14] We achieve real-time 3D pose estimation. [**[video]**](https://www.bilibili.com/video/BV18f4y197R7/)
 ### Introduction
 Spatio-temporal information is key to resolve occlusion and depth ambiguity in 3D pose estimation. Previous methods have focused on either temporal contexts or local-to-global architectures that embed fixed-length spatio-temporal information. 
 To date, there have not been effective proposals to simultaneously and flexibly capture varying spatio-temporal sequences and effectively achieves real-time 3D pose estimation.
@@ -23,7 +23,7 @@ Experiments on two challenging benchmark datasets (Human3.6M and HumanEva-I) and
 <img src="./image/framework.png"/>
 </div>
 
-* Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
+* Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset [**[Introduction]**](./INFERENCE_EN.md) 
 
 <div align=center>
 <img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/WalkApart.gif" alt=" Two-person 3D human pose estimation"/>
@@ -106,7 +106,7 @@ python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/bas
 <img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball_body_foot.gif" width="640" alt="19-joint 3D human pose estimation">
 </div>
 
-### Inference a custom video
+### How to generate 3D human poses from a custom video
 We provide a tutorial on how to run our model on custom videos. See [INFERENCE.md](./INFERENCE_EN.md) for more details.
 
 ### Acknowledgements
