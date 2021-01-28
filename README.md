@@ -97,20 +97,21 @@ mkdir gastnet
 ### Reconstruct 3D poses from 2D keypoints
 Reconstruct 3D poses from 2D keypoints estimated from 2D detector (Mask RCNN, HRNet and OpenPose et al), and visualize it.
 
-If you want to reproduce the baseball example, please run the following code:
+If you want to reproduce the baseball example (17 joints, only including body joints), please run the following code:
 ```
 python reconstruction.py
 ```
 
-If you want to reproduce the baseball example (including body and toe joints), please run the following code:
+If you want to reproduce the baseball example (19 joints, including body and toe joints), please run the following code:
 ```
 python reconstruction.py -w 27_frame_model_toe.bin -n 19 -k ./data/keypoints/baseball_wholebody.json -kf wholebody
 ```
 * Reconstructed from YouTube video
 
-![](./image/Baseball.gif)
+<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball.gif" width="640" alt="17-joint 3D human pose estimation">
 
-![](./image/Baseball_body_foot.gif)
+<img src="https://github.com/fabro66/GAST-Net-3DPoseEstimation/blob/master/image/Baseball_body_foot.gif" width="640" alt="19-joint 3D human pose estimation">
+
 * Reconstructed from [NTU-RGBD](http://rose1.ntu.edu.sg/datasets/actionrecognition.asp) dataset 
 
 ![](./image/WalkApart.gif)
