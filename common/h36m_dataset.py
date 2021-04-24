@@ -276,7 +276,7 @@ class Human36mDataset(MocapDataset):
             self._skeleton._parents[10] = 8
             self._skeleton._parents[13] = 8
 
-        elif keypoints_type == 'cpn_ft_h36m_dbb':
+        elif keypoints_type == 'cpn_ft_h36m_dbb' or keypoints_type == 'gt':
             # Bring the skeleton to 17 joints instead of the original 32
             self.remove_joints([4, 5, 9, 10, 11, 16, 20, 21, 22, 23, 24, 28, 29, 30, 31])
 
@@ -291,5 +291,3 @@ class Human36mDataset(MocapDataset):
             # Rewire shoulders to the correct parents
             self._skeleton._parents[13] = 10
             self._skeleton._parents[16] = 10
-        else:
-            print('gt')

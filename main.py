@@ -37,6 +37,7 @@ def load_data(args):
     print("Loading 2D detections...")
     keypoints = np.load("data/data_2d_" + args.dataset + "_" + args.keypoints + ".npz", allow_pickle=True)
     keypoints_metadata = keypoints["metadata"].item()
+    keypoints_metadata.update({'layout_name': 'h36m'})
     keypoints_symmetry = keypoints_metadata["keypoints_symmetry"]
 
     if args.dataset.startswith('humaneva'):

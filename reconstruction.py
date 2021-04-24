@@ -60,6 +60,8 @@ def parse_args():
     # General arguments
     parser.add_argument('-f', '--frames', type=int, default=27, metavar='NAME',
                         help='The number of receptive fields')
+    parser.add_argument('-ca', '--causal', action='store_true',
+                        help='Using real-time model with causal convolution')
     parser.add_argument('-w', '--weight', type=str, default='27_frame_model.bin', metavar='NAME',
                         help='The name of model weight')
     parser.add_argument('-n', '--num-joints', type=int, default=17, metavar='NAME',
@@ -226,12 +228,12 @@ def reconstruction(args):
         channels = 32
 
     model_pos = SpatioTemporalModel(adj, args.num_joints, 2, args.num_joints, filter_widths=filter_widths,
-                                    channels=channels, dropout=0.05)
+                                    channels=channels, dropout=0.05, causal=args.causal)
 
     if torch.cuda.is_available():
         model_pos = model_pos.cuda()
 
-    # load trained model
+    # load pretrained model
     print('Loading checkpoint', args.weight)
     chk_file = os.path.join('./checkpoint/gastnet', args.weight)
     checkpoint = torch.load(chk_file, map_location=lambda storage, loc: storage)
@@ -239,7 +241,11 @@ def reconstruction(args):
 
     receptive_field = model_pos.receptive_field()
     pad = (receptive_field - 1) // 2  # Padding on each side
-    causal_shift = 0
+
+    if args.causal:
+        causal_shift = pad
+    else:
+        causal_shift = 0
 
     print('Reconstructing ...')
     gen = UnchunkedGenerator(None, None, [input_keypoints[valid_frames]],

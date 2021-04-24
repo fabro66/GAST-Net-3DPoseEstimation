@@ -103,14 +103,14 @@ def render_animation(keypoints, keypoints_metadata, poses, skeleton, fps, bitrat
     ax_3d = []
     lines_3d = []
     trajectories = []
-    radius = 1.5
+    radius = 1.7
     for index, (title, data) in enumerate(poses.items()):
         ax = fig.add_subplot(1, 1 + len(poses), index+2, projection='3d')
         ax.view_init(elev=15., azim=azim)
         ax.set_xlim3d([-radius/2, radius/2])
         ax.set_zlim3d([0, radius])
         ax.set_ylim3d([-radius/2, radius/2])
-        ax.set_aspect('equal')
+        # ax.set_aspect('equal')
         ax.set_xticklabels([])
         ax.set_yticklabels([])
         ax.set_zticklabels([])
