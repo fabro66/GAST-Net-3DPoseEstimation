@@ -124,7 +124,7 @@ If you find our paper and repo useful, please cite our paper. Thanks!
 ```
 @article{liu2020a,
   title={A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video},
-  author={Liu, Junfa and Rojas, Juan and Liang, Zhijun and Li, Yihui and Guan},
+  author={Liu, Junfa and Rojas, Juan and Liang, Zhijun and Li, Yihui and Guan, Yisheng},
   journal={arXiv preprint arXiv:2003.14179},
   year={2020}
 }
