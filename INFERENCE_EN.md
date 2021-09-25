@@ -14,7 +14,8 @@ estimation, and GAST-Net for 2D-to-3D pose reconstruction.
 
 ## Download pretrained model
 - Prepare YOLOv3 pretrained model：
-``` cd root_path
+``` 
+    mkdir checkpoint
     cd checkpoint
     mkdir yolov3
     wget https://pjreddie.com/media/files/yolov3.weights
@@ -28,6 +29,7 @@ estimation, and GAST-Net for 2D-to-3D pose reconstruction.
     mkdir pose_coco
 ```
 Download HRNet pretrained model[[pose_hrnet_w48_384x288.pth]](https://github.com/leoxiaobin/deep-high-resolution-net.pytorch), put it to *pose_coco* dir.
+at the gdrive link https://drive.google.com/file/d/1UoJhTtjHNByZSm96W3yFTfU5upJnsKiS/view?usp=sharing
 
 
 - Prepare GAST-Net pretrained model:
@@ -47,6 +49,9 @@ Download GAST-Net pretrained model[[27_frame_model.bin]](https://drive.google.co
         |-- gastnet
             |-- 27_frame_model.bin
 ```
+- Need to replace 134 line of code in file /home/ubuntu/anaconda3/envs/gast/lib/python3.6/site-packages/mpl_toolkits/mplot3d/art3d.py
+from ```zs = np.broadcast_to(zs, xs.shape)``` to the ```zs = np.broadcast_to(zs, len(xs))```
+
 ## Generating rendering animation
 - Single-person 3D pose estimation：
 ```

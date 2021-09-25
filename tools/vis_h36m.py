@@ -108,7 +108,7 @@ def render_animation(keypoints, keypoints_metadata, poses, skeleton, fps, bitrat
             ax.set_xlim3d([-radius / 2, radius / 2])
             ax.set_zlim3d([0, radius])
             ax.set_ylim3d([-radius / 2, radius / 2])
-            ax.set_aspect('equal')
+            ax.set_aspect('auto')
             ax.set_xticklabels([])
             ax.set_yticklabels([])
             ax.set_zticklabels([])
@@ -175,7 +175,7 @@ def render_animation(keypoints, keypoints_metadata, poses, skeleton, fps, bitrat
             colors_2d[joints_right_2d] = 'red'
 
         if not initialized:
-            image = ax_in.imshow(all_frames[i], aspect='equal')
+            image = ax_in.imshow(all_frames[i], aspect='auto')
 
             for j, j_parent in zip(index, parents):
                 if j_parent == -1:

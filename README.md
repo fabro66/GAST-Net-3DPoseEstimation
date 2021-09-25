@@ -1,5 +1,14 @@
 # A Graph Attention Spatio-temporal Convolutional Networks for 3D Human Pose Estimation in Video (GAST-Net)
 
+
+# Setup
+
+```
+conda create -n gast python=3.6
+conda activate gast
+pip install -r requirements.txt
+```
+
 ### News
 * [2021/01/28] We update GAST-Net to able to generate 19-joint human poses including body and foot joints. [**[DEMO]**](./image/Baseball_body_foot.gif)
 * [2020/11/17] We provide a tutorial on how to generate 3D poses/animation from a custom video. [**[INFERENCE_EN.md]**](./INFERENCE_EN.md)
