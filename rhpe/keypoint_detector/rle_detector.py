@@ -3,7 +3,7 @@ from typing import Protocol, Sequence
 import numpy as np
 
 import torch
-from rhpe.core import Frames, KeyPointDetector2D, KeyPoints2D
+from rhpe.core import Frames, KeyPointDetector, KeyPoints2D
 from torch import nn
 from rlepose.models import builder
 from rlepose.utils.transforms import CropTransformer, im_to_torch, heatmap_to_coord
@@ -14,7 +14,7 @@ class RLEModelOutput(Protocol):
     pred_scores: Sequence[torch.Tensor]
 
 
-class RLEKeyPointDetector2D(KeyPointDetector2D):
+class RLEKeyPointDetector2D(KeyPointDetector):
     def __init__(
         self,
         device: str = "cuda:0",

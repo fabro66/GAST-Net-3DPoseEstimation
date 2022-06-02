@@ -11,7 +11,7 @@ from tools.visualization import render_animation
 from abc import ABC, abstractmethod
 
 
-class KeyPointDetector2D(ABC):
+class KeyPointDetector(ABC):
     @abstractmethod
     def detect_2d_keypoints(self, frames: Frames) -> KeyPoints2D:
         # Batchに分割するの忘れずに
