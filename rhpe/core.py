@@ -1,22 +1,25 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol, TypedDict
+from typing import TypedDict
 import cv2
 import numpy as np
 from common.camera import camera_to_world, normalize_screen_coordinates
 from common.skeleton import Skeleton
 from tools.mpii_coco_h36m import coco_h36m
 from tools.visualization import render_animation
+from abc import ABC, abstractmethod
 
 
-class KeyPointDetector2D(Protocol):
+class KeyPointDetector2D(ABC):
+    @abstractmethod
     def detect_2d_keypoints(self, frames: Frames) -> KeyPoints2D:
         # Batchに分割するの忘れずに
         ...
 
 
-class KeyPointLifter(Protocol):
+class KeyPointLifter(ABC):
+    @abstractmethod
     def lift_up(self, keypoints_2d: KeyPoints2D) -> KeyPoints3D:
         # Batchに分割するの忘れずに
         # GASTNetには最後のフレームのみ推論する方法があるかも
@@ -43,7 +46,7 @@ class Frames:
 
 class KeyPointsMeta(TypedDict):
     skeleton: Skeleton
-    keypoints_symetry: tuple[list[int], list[int]]
+    keypoints_symmetry: tuple[list[int], list[int]]
     layout_name: str
     num_joints: int
 
@@ -76,7 +79,7 @@ class KeyPoints2D:
         )
         meta = KeyPointsMeta(
             skeleton=skeleton,
-            keypoints_symetry=(joints_left, joints_right),
+            keypoints_symmetry=(joints_left, joints_right),
             layout_name="Human3.6M",
             num_joints=17,
         )
