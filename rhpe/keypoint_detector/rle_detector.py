@@ -11,7 +11,7 @@ from rlepose.utils.transforms import CropTransformer, im_to_torch, heatmap_to_co
 
 class RLEModelOutput(Protocol):
     pred_jts: Sequence[torch.Tensor]
-    pred_scores: Sequence[torch.Tensor]
+    maxvals: Sequence[torch.Tensor]
 
 
 class RLEKeyPointDetector2D(KeyPointDetector):
@@ -69,7 +69,7 @@ class RLEKeyPointDetector2D(KeyPointDetector):
 
     def postprocess_frames(
         self, model_output: RLEModelOutput, transformer: CropTransformer
-    ) -> np.ndarray:
+    ) -> tuple[np.ndarray, np.ndarray]:
         """post process model output to create pose coordinates in original image space
 
         Args:
@@ -77,18 +77,20 @@ class RLEKeyPointDetector2D(KeyPointDetector):
             transformer (CropTransformer): croptransformer
 
         Returns:
-            np.ndarray: (F, J, 2) coordinates in original image space
+            tuple(np.ndarray, np.ndarray):
+                (F, J, 2) coordinates in original image space,
+                (F, J) confidence scores
         """
         num_frames = len(model_output.pred_jts)
         pred_jts = torch.stack(
             [model_output.pred_jts[idx] for idx in range(num_frames)]
         )
         pred_scores = torch.stack(
-            [model_output.pred_scores[idx] for idx in range(num_frames)]
+            [model_output.maxvals[idx] for idx in range(num_frames)]
         )
         bbox = np.array([0, 0, self.input_width, self.input_height])
         coords: np.ndarray
-        coords, _scores = heatmap_to_coord(
+        coords, scores = heatmap_to_coord(
             pred_jts,
             pred_scores,
             (self.input_height // 4, self.input_width // 4),
@@ -98,13 +100,17 @@ class RLEKeyPointDetector2D(KeyPointDetector):
         coords_original = np.stack(
             [transformer.inverse_position(frame_coords) for frame_coords in coords]
         )
-        return coords_original
+        scores = scores[:, :, 0]
+        return coords_original, scores
 
     def detect_2d_keypoints(self, frames: Frames) -> KeyPoints2D:
         original_size = (frames.width, frames.height)  # x, y not y, x
         input_size = (self.input_width, self.input_height)  # x, y not y, x
         transformer = CropTransformer(original_size, input_size)
         model_input = self.preprocess_frames(frames, transformer)
-        model_output = self.model(model_input)
-        coords_original = self.postprocess_frames(model_output, transformer)
-        return KeyPoints2D.from_coco(coords_original, frames.width, frames.height)
+        with torch.no_grad():
+            model_output = self.model(model_input)
+        coords_original, scores = self.postprocess_frames(model_output, transformer)
+        return KeyPoints2D.from_coco(
+            coords_original, scores, frames.width, frames.height
+        )

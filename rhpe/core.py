@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from common.camera import camera_to_world, normalize_screen_coordinates
 from common.skeleton import Skeleton
-from tools.mpii_coco_h36m import coco_h36m
+from tools.preprocess import h36m_coco_format
 from tools.visualization import render_animation
 from abc import ABC, abstractmethod
 
@@ -41,7 +41,12 @@ class Frames:
 
     @classmethod
     def from_path(cls, path: Path) -> Frames:
-        raise NotImplementedError
+        cap = cv2.VideoCapture(str(path))
+
+        assert cap.isOpened()
+        video_len = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        numpy = np.stack([cap.read()[1] for _ in range(video_len)])
+        return cls(numpy, path)
 
 
 class KeyPointsMeta(TypedDict):
@@ -53,25 +58,31 @@ class KeyPointsMeta(TypedDict):
 
 @dataclass
 class KeyPoints2D:
-    numpy: np.ndarray  # F, J, 2
+    coordinates: np.ndarray  # F, J, 2
+    scores: np.ndarray  # F, J
     width: int
     height: int
     meta: KeyPointsMeta
     valid_frames: np.ndarray
 
     @classmethod
-    def from_coco(cls, coco_numpy: np.ndarray, width: int, height: int) -> KeyPoints2D:
+    def from_coco(
+        cls, coordinates: np.ndarray, scores: np.ndarray, width: int, height: int
+    ) -> KeyPoints2D:
         """constructor from coco-formatted numpy
 
         Args:
-            coco_numpy (np.ndarray): (F, 17, 2)
+            coordinate (np.ndarray): (F, J, 2)
+            scores (np.ndarray): (F, )
 
         Returns:
             KeyPoints2D: _description_
         """
         joints_left = [4, 5, 6, 11, 12, 13]
         joints_right = [1, 2, 3, 14, 15, 16]
-        keypoints, valid_frames = coco_h36m(coco_numpy)
+        coordinates, scores, valid_frames = h36m_coco_format(
+            coordinates[np.newaxis], scores[np.newaxis]
+        )
         skeleton = Skeleton(
             parents=[-1, 0, 1, 2, 0, 4, 5, 0, 7, 8, 9, 8, 11, 12, 8, 14, 15],
             joints_left=[4, 5, 6, 11, 12, 13],
@@ -84,15 +95,16 @@ class KeyPoints2D:
             num_joints=17,
         )
         return cls(
-            numpy=keypoints,
+            coordinates=coordinates[0],
+            scores=scores[0],
             width=width,
             height=height,
             meta=meta,
-            valid_frames=valid_frames,
+            valid_frames=valid_frames[0],
         )
 
     def as_input(self) -> np.ndarray:
-        return normalize_screen_coordinates(self.numpy, self.width, self.height)
+        return normalize_screen_coordinates(self.coordinates, self.width, self.height)
 
 
 @dataclass
@@ -131,7 +143,7 @@ class Renderer:
         height = int(round(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
         render_animation(
-            keypoints_2d.numpy,
+            keypoints_2d.coordinates,
             keypoints_2d.meta,
             anim_output,
             keypoints_2d.meta["skeleton"],
