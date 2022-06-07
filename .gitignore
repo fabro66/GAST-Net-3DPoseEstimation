@@ -167,3 +167,9 @@ real_time_skes.py
 
 # sandbox
 sandbox
+
+# data
+data/cmumosei
+data/cmumosi
+final_aligned
+word_aligned_highlevel
