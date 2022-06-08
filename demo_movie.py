@@ -93,11 +93,13 @@ def demo_movie_2d(detector: KeyPointDetector, movie_path: Path, output_dir: Path
     basename = movie_path.stem
     filename = f"{basename}_demo.mp4"
     output_path = output_dir.joinpath(filename)
+
     fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
     writer = cv2.VideoWriter(
         str(output_path), fourcc, 24, (frames.width, frames.height)
     )
     for frame, kpts in zip(frames.numpy, keypoints_2d.coordinates):
+        assert frame.shape == (frames.height, frames.width, 3)
         for kpt in kpts:
             kpt = tuple(kpt.astype(np.int32))
             cv2.circle(frame, kpt, 10, (255, 0, 255))
@@ -111,8 +113,8 @@ def main():
     movie_path = sandbox_path.joinpath("input", "khan_upperbody.mp4")
     output_dir = sandbox_path.joinpath("output")
     detector = RLEKeyPointDetector2D(device=device)
-    # demo_movie_2d(detector, movie_path, output_dir)
-    demo_movie(detector, movie_path, output_dir)
+    demo_movie_2d(detector, movie_path, output_dir)
+    # demo_movie(detector, movie_path, output_dir)
 
 
 if __name__ == "__main__":
