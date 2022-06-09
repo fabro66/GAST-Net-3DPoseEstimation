@@ -26,16 +26,12 @@ def render(
         anim_output.update({"Reconstruction %d" % (i + 1): anim_prediction})
 
     viz_output = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
-    print("Generating animation ...")
     # re_kpts: (M, T, N, 2) --> (T, M, N, 2)
-    re_kpts = revise_kpts(
-        keypoints_2d.coordinates,
-        keypoints_2d.scores,
-        keypoints_2d.valid_frames,
-    )[np.newaxis]
-    re_kpts = re_kpts.transpose(1, 0, 2, 3)
+    coordinates_2d = keypoints_2d.coordinates[np.newaxis]
+    coordinates_2d = coordinates_2d.transpose(1, 0, 2, 3)
+    print("Generating animation ...")
     render_animation(
-        re_kpts,
+        coordinates_2d,
         asdict(keypoints_2d.meta),
         anim_output,
         keypoints_2d.meta.skeleton,
