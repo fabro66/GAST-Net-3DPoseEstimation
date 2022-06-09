@@ -50,7 +50,8 @@ class Frames:
         return cls(numpy, path)
 
 
-class KeyPointsMeta(TypedDict):
+@dataclass
+class KeyPointsMeta:
     skeleton: Skeleton
     keypoints_symmetry: tuple[list[int], list[int]]
     layout_name: str

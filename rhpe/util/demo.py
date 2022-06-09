@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from pathlib import Path
 
 import cv2
@@ -35,9 +36,9 @@ def render(
     re_kpts = re_kpts.transpose(1, 0, 2, 3)
     render_animation(
         re_kpts,
-        keypoints_2d.meta,
+        asdict(keypoints_2d.meta),
         anim_output,
-        keypoints_2d.meta["skeleton"],
+        keypoints_2d.meta.skeleton,
         25,
         30000,
         np.array(70.0, dtype=np.float32),
