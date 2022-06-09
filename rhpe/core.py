@@ -1,14 +1,15 @@
 from __future__ import annotations
+
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TypedDict
+
 import cv2
 import numpy as np
 from common.camera import camera_to_world, normalize_screen_coordinates
 from common.skeleton import Skeleton
 from tools.preprocess import h36m_coco_format
-from tools.visualization import render_animation
-from abc import ABC, abstractmethod
 
 
 class KeyPointDetector(ABC):
@@ -114,47 +115,3 @@ class KeyPoints3D:
 
     def camera_to_world(self, rot: np.ndarray, t: int) -> np.ndarray:
         return camera_to_world(self.numpy, R=rot, t=t)
-
-
-class Renderer:
-    def __init__(self, rot: np.ndarray):
-        assert len(rot) == 4
-        self.rot = rot
-
-    def render(
-        self,
-        keypoints_2d: KeyPoints2D,
-        keypoints_3d: KeyPoints3D,
-        video_path: Path,
-        output_path: Path,
-    ):
-        # We don't have the trajectory, but at least we can rebase the height
-        prediction = keypoints_3d.camera_to_world(self.rot, t=0)
-        prediction[:, :, 2] -= np.min(prediction[:, :, 2])
-        input_keypoints = keypoints_2d.as_input()
-        valid_frames = keypoints_2d.valid_frames
-        prediction_new = np.zeros((*input_keypoints.shape[:-1], 3), dtype=np.float32)
-        prediction_new[valid_frames] = prediction
-        anim_output = {"Reconstruction": prediction_new}
-
-        # Get the width and height of video
-        cap = cv2.VideoCapture(str(video_path))
-        width = int(round(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
-        height = int(round(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-
-        render_animation(
-            keypoints_2d.coordinates,
-            keypoints_2d.meta,
-            anim_output,
-            keypoints_2d.meta["skeleton"],
-            25,
-            3000,
-            np.array(70.0, dtype=np.float32),
-            str(output_path),
-            limit=-1,
-            downsample=1,
-            size=5,
-            input_video_path=str(video_path),
-            viewport=(width, height),
-            input_video_skip=0,
-        )

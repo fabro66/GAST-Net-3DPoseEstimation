@@ -112,3 +112,52 @@ def crop_img(img: np.ndarray, bbox: np.ndarray) -> np.ndarray:
         flags=cv2.INTER_LINEAR,
     )
     return cropped
+
+
+def revise_kpts(
+    h36m_kpts: np.ndarray, h36m_scores: np.ndarray, valid_frames: np.ndarray
+) -> np.ndarray:
+    """revise unconfident keypoints
+
+    Args:
+        h36m_kpts (np.ndarray): (F, J, 2)
+        h36m_scores (np.ndarray): (F, J)
+        valid_frames (np.ndarray): (F,)
+
+    Returns:
+        np.ndarray: (F, J, 2)
+    """
+
+    new_h36m_kpts = np.zeros_like(h36m_kpts)
+
+    kpts = h36m_kpts[valid_frames]
+    score = h36m_scores[valid_frames]
+
+    # threshold_score = score > 0.3
+    # if threshold_score.all():
+    #     continue
+
+    index_frame = np.where(np.sum(score < 0.3, axis=1) > 0)[0]
+
+    for frame in index_frame:
+        less_threshold_joints = np.where(score[frame] < 0.3)[0]
+
+        intersect = [i for i in [2, 3, 5, 6] if i in less_threshold_joints]
+
+        if [2, 3, 5, 6] == intersect:
+            kpts[frame, [2, 3, 5, 6]] = kpts[frame, [1, 1, 4, 4]]
+        elif [2, 3, 6] == intersect:
+            kpts[frame, [2, 3, 6]] = kpts[frame, [1, 1, 5]]
+        elif [3, 5, 6] == intersect:
+            kpts[frame, [3, 5, 6]] = kpts[frame, [2, 4, 4]]
+        elif [3, 6] == intersect:
+            kpts[frame, [3, 6]] = kpts[frame, [2, 5]]
+        elif [3] == intersect:
+            kpts[frame, 3] = kpts[frame, 2]
+        elif [6] == intersect:
+            kpts[frame, 6] = kpts[frame, 5]
+        else:
+            continue
+
+    new_h36m_kpts[valid_frames] = kpts
+    return new_h36m_kpts
