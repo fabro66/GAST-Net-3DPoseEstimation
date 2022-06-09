@@ -4,7 +4,7 @@ import numpy as np
 
 import torch
 from rhpe.core import Frames, KeyPointDetector, KeyPoints2D
-from rhpe.transform import CropTransformer
+from rhpe.util.transform import CropTransformer
 from torch import nn
 from rlepose.models import builder
 from rlepose.utils.transforms import im_to_torch, heatmap_to_coord
