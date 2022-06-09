@@ -4,10 +4,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 from rhpe.core import Frames, KeyPointDetector, KeyPointLifter, KeyPoints2D, KeyPoints3D
-from rhpe.util.transform import revise_kpts
 from tools.vis_h36m import render_animation
-
-ROT = np.array([0.14070565, -0.15007018, -0.7552408, 0.62232804], dtype=np.float32)
 
 
 def render(
