@@ -3,7 +3,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 from rhpe.core import Frames, KeyPointDetector, KeyPointLifter, KeyPoints2D, KeyPoints3D
-from rhpe.util.visualize import render_animation
+from rhpe.util.visualize import KeyPoints2DAnimation, KeyPoints3DAnimation, Renderer
 
 
 def render(
@@ -19,7 +19,11 @@ def render(
     output_path = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
     coordinates_2d = keypoints_2d.coordinates[np.newaxis]
     coordinates_2d = coordinates_2d.transpose(1, 0, 2, 3)
-    render_animation(frames, keypoints_2d, keypoints_3d, output_path)
+    animation_2d = KeyPoints2DAnimation(keypoints_2d, frames, True)
+    animation_3d = KeyPoints3DAnimation(keypoints_3d, frames)
+    animations = [animation_2d, animation_3d]
+    renderer = Renderer(animations)
+    renderer.render(output_path)
 
 
 def demo_movie(

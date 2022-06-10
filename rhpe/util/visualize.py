@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+from functools import reduce
 from pathlib import Path
 
 import numpy as np
@@ -8,7 +10,6 @@ from tools.color_edge import h36m_color_edge
 from tqdm import tqdm
 
 RADIUS = 2.5
-
 ELEV = 15.0
 AZIM = 70.0
 NUM_JOINTS = 17
@@ -18,100 +19,80 @@ MAKRER_SIZE = 10
 BITRATE = 30000
 
 
-def render_animation(
-    frames: Frames,
-    keypoints_2d: KeyPoints2D,
-    keypoints_3d: KeyPoints3D,
-    output_path: Path,
-):
-    plt.ioff()
+class Animation(ABC):
+    @abstractmethod
+    def render_with_axes(self, step: int, ax: plt.Axes):
+        ...
 
-    # ax 2D
-    fig = plt.figure()
-    ax_2d = fig.add_subplot(1, 2, 1)
+    @property
+    @abstractmethod
+    def num_frames(self) -> int:
+        ...
 
-    # ax 3D
-    ax_3d = fig.add_subplot(1, 2, 2, projection="3d")
-    ax_3d.view_init(elev=ELEV, azim=AZIM)
-    ax_3d.set_xlim3d([-RADIUS / 2, RADIUS / 2])
-    ax_3d.set_zlim3d([0, RADIUS])
-    ax_3d.set_ylim3d([-RADIUS / 2, RADIUS / 2])
-    ax_3d.set_aspect("auto")
-    ax_3d.set_xticklabels([])
-    ax_3d.set_yticklabels([])
-    ax_3d.set_zticklabels([])
-    ax_3d.dist = 7.5
+    @property
+    @abstractmethod
+    def fps(self) -> int:
+        ...
 
-    initialized = False
-    image = None
-    points = None
-    lines = list()
-    lines_3d = list()
+    @property
+    @abstractmethod
+    def projection(self) -> str:
+        ...
 
-    num_frames = len(frames.numpy)
+    @abstractmethod
+    def init_axes(self, axes: plt.Axes):
+        ...
 
-    def update_video(frame_idx: int):
-        nonlocal initialized, image, points
-        joints_right_2d = keypoints_2d.meta.keypoints_symmetry[1]
 
+class KeyPoints2DAnimation(Animation):
+    def __init__(
+        self, keypoints_2d: KeyPoints2D, frames: Frames, background_frame: bool
+    ):
+        self.keypoints_2d = keypoints_2d
+        self.frames = frames
+        self.background_frame = background_frame
+        self.initialized = False
+        self.lines = list()
+        self.points = None
+        self.image = None
+
+    @property
+    def num_frames(self):
+        return self.keypoints_2d.coordinates.shape[0]
+
+    @property
+    def fps(self):
+        return self.frames.fps
+
+    @property
+    def projection(self) -> str:
+        return "rectilinear"
+
+    def init_axes(self, axes: plt.Axes):
+        pass
+
+    def initialize(self, ax: plt.Axes):
+        step = 0
+        joints_right_2d = self.keypoints_2d.meta.keypoints_symmetry[1]
         colors_2d = np.full(NUM_JOINTS, "black")
         colors_2d[joints_right_2d] = "red"
-        kpts2d_frame = keypoints_2d.coordinates[frame_idx]
-        kpts3d_frame = keypoints_3d.numpy[frame_idx]
-        parents = keypoints_2d.meta.skeleton.parents()
-        assert (
-            len(parents) == 17 and keypoints_2d.meta.layout_name == "Human3.6M"
-        ), "only support h36m keypoints format"
-        if not initialized:
-            image = ax_2d.imshow(frames.numpy[frame_idx], aspect="equal")
-            # Draw 2D Points
-            points = ax_2d.scatter(
-                *kpts2d_frame.T, MAKRER_SIZE, color=colors_2d, edgecolor=EDGECOLOR
-            )
-            for joint, parent in zip(range(NUM_JOINTS), parents):
-                if parent == -1:
-                    continue
+        if self.background_frame:
+            self.image = ax.imshow(self.frames.numpy[step], aspect="equal")
+        kpts2d_frame = self.keypoints_2d.coordinates[step]
+        parents = self.keypoints_2d.meta.skeleton.parents()
+        colors_2d = np.full(NUM_JOINTS, "black")
+        colors_2d[joints_right_2d] = "red"
+        # Draw 2D Points
+        self.points = ax.scatter(
+            *kpts2d_frame.T, MAKRER_SIZE, color=colors_2d, edgecolor=EDGECOLOR  # type: ignore
+        )
+        for joint, parent in zip(range(NUM_JOINTS), parents):
+            if parent == -1:
+                continue
 
-                # Draw 2D Bones
-                lines.append(
-                    ax_2d.plot(
-                        [
-                            kpts2d_frame[joint, 0],
-                            kpts2d_frame[parent, 0],
-                        ],
-                        [
-                            kpts2d_frame[joint, 1],
-                            kpts2d_frame[parent, 1],
-                        ],
-                        color="pink",
-                    )
-                )
-
-                # Draw 3D Bones
-                col = h36m_color_edge(joint)
-                lines_3d.append(
-                    ax_3d.plot(
-                        [kpts3d_frame[joint, 0], kpts3d_frame[parent, 0]],
-                        [kpts3d_frame[joint, 1], kpts3d_frame[parent, 1]],
-                        [kpts3d_frame[joint, 2], kpts3d_frame[parent, 2]],
-                        zdir="z",
-                        c=col,
-                        linewidth=LINEWIDTH,
-                    )
-                )
-            initialized = True
-        else:
-            image.set_data(frames.numpy[frame_idx])  # type: ignore
-
-            # Change 2D Key Points
-            points.set_offsets(kpts2d_frame)  # type: ignore
-
-            for joint, parent in zip(range(NUM_JOINTS), parents):
-                if parent == -1:
-                    continue
-
-                # Change 2D Lines
-                lines[joint - 1][0].set_data(
+            # Draw 2D Bones
+            self.lines.append(
+                ax.plot(
                     [
                         kpts2d_frame[joint, 0],
                         kpts2d_frame[parent, 0],
@@ -120,26 +101,160 @@ def render_animation(
                         kpts2d_frame[joint, 1],
                         kpts2d_frame[parent, 1],
                     ],
+                    color="pink",
                 )
+            )
 
-                # Change 3D Lines
-                lines_3d[joint - 1][0].set_xdata(
-                    [kpts3d_frame[joint, 0], kpts3d_frame[parent, 0]]
-                )
-                lines_3d[joint - 1][0].set_ydata(
-                    [kpts3d_frame[joint, 1], kpts3d_frame[parent, 1]]
-                )
-                lines_3d[joint - 1][0].set_3d_properties(
-                    [kpts3d_frame[joint, 2], kpts3d_frame[parent, 2]], zdir="z"
-                )
+        self.initialized = True
 
-    fig.tight_layout()
+    def update(self, step: int):
+        if self.background_frame:
+            self.image.set_data(self.frames.numpy[step])  # type: ignore
+        kpts2d_frame = self.keypoints_2d.coordinates[step]
+        parents = self.keypoints_2d.meta.skeleton.parents()
+        # Change 2D Key Points
+        self.points.set_offsets(kpts2d_frame)  # type: ignore
 
-    anim = FuncAnimation(fig, update_video, frames=tqdm(range(num_frames)))  # type: ignore
-    if output_path.suffix == ".mp4":
-        Writer = writers["ffmpeg"]
-        writer = Writer(fps=frames.fps, metadata={}, bitrate=BITRATE)
-        anim.save(str(output_path), writer=writer)
-    else:
-        raise ValueError("Unsupported output format (only .mp4 is supported")
-    plt.close()
+        for joint, parent in zip(range(NUM_JOINTS), parents):
+            if parent == -1:
+                continue
+
+            # Change 2D Lines
+            self.lines[joint - 1][0].set_data(
+                [
+                    kpts2d_frame[joint, 0],
+                    kpts2d_frame[parent, 0],
+                ],
+                [
+                    kpts2d_frame[joint, 1],
+                    kpts2d_frame[parent, 1],
+                ],
+            )
+
+    def render_with_axes(self, step: int, ax: plt.Axes):
+        parents = self.keypoints_2d.meta.skeleton.parents()
+        assert (
+            len(parents) == 17 and self.keypoints_2d.meta.layout_name == "Human3.6M"
+        ), "only support h36m keypoints format"
+        if not self.initialized:
+            self.initialize(ax)
+        else:
+            self.update(step)
+
+
+class KeyPoints3DAnimation(Animation):
+    def __init__(self, keypoints_3d: KeyPoints3D, frames: Frames):
+        self.keypoints_3d = keypoints_3d
+        self.frames = frames
+        self.initialized = False
+        self.lines = list()
+
+    @property
+    def num_frames(self):
+        return self.keypoints_3d.numpy.shape[0]
+
+    @property
+    def fps(self):
+        return self.frames.fps
+
+    @property
+    def projection(self) -> str:
+        return "3d"
+
+    def init_axes(self, ax: plt.Axes):
+        ax.view_init(elev=ELEV, azim=AZIM)
+        ax.set_xlim3d([-RADIUS / 2, RADIUS / 2])
+        ax.set_zlim3d([0, RADIUS])
+        ax.set_ylim3d([-RADIUS / 2, RADIUS / 2])
+        ax.set_aspect("auto")
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.set_zticklabels([])
+        ax.dist = 7.5  # type: ignore
+
+    def initialize(self, ax):
+        step = 0
+        kpts3d_frame = self.keypoints_3d.numpy[step]
+        parents = self.keypoints_3d.meta.skeleton.parents()
+        for joint, parent in zip(range(NUM_JOINTS), parents):
+            if parent == -1:
+                continue
+            # Draw 3D Bones
+            col = h36m_color_edge(joint)
+            self.lines.append(
+                ax.plot(
+                    [kpts3d_frame[joint, 0], kpts3d_frame[parent, 0]],
+                    [kpts3d_frame[joint, 1], kpts3d_frame[parent, 1]],
+                    [kpts3d_frame[joint, 2], kpts3d_frame[parent, 2]],
+                    zdir="z",
+                    c=col,
+                    linewidth=LINEWIDTH,
+                )
+            )
+        self.initialized = True
+
+    def update(self, step: int):
+        kpts3d_frame = self.keypoints_3d.numpy[step]
+        parents = self.keypoints_3d.meta.skeleton.parents()
+        for joint, parent in zip(range(NUM_JOINTS), parents):
+            if parent == -1:
+                continue
+
+            # Change 3D Lines
+            self.lines[joint - 1][0].set_xdata(
+                [kpts3d_frame[joint, 0], kpts3d_frame[parent, 0]]
+            )
+            self.lines[joint - 1][0].set_ydata(
+                [kpts3d_frame[joint, 1], kpts3d_frame[parent, 1]]
+            )
+            self.lines[joint - 1][0].set_3d_properties(
+                [kpts3d_frame[joint, 2], kpts3d_frame[parent, 2]], zdir="z"
+            )
+
+    def render_with_axes(self, step: int, ax: plt.Axes):
+        parents = self.keypoints_3d.meta.skeleton.parents()
+        assert (
+            len(parents) == 17 and self.keypoints_3d.meta.layout_name == "Human3.6M"
+        ), "only support h36m keypoints format"
+        if not self.initialized:
+            self.initialize(ax)
+        else:
+            self.update(step)
+
+
+class Renderer:
+    def __init__(self, animations: list[Animation]):
+        assert len(animations) > 0, "no annimation registered"
+        assert reduce(
+            lambda x, y: x == y, map(lambda anim: anim.num_frames, animations)
+        ), "number of frames of all animations must be the same"
+        assert reduce(
+            lambda x, y: x == y, map(lambda anim: anim.fps, animations)
+        ), "fps of all animations must be the same"
+        self.fps = animations[0].fps
+        self.num_frames = animations[0].num_frames
+        self.animations = animations
+        self.fig = plt.figure()
+        self.axes = [
+            self.fig.add_subplot(
+                1, len(animations), idx + 1, projection=animation.projection
+            )
+            for idx, animation in enumerate(animations)
+        ]
+        for ax, animation in zip(self.axes, animations):
+            animation.init_axes(ax)
+
+    def render(self, output_path: Path):
+        def update(step: int):
+            for ax, animation in zip(self.axes, self.animations):
+                animation.render_with_axes(step, ax)
+
+        anim = FuncAnimation(self.fig, update, frames=tqdm(range(self.num_frames)))  # type: ignore
+
+        if output_path.suffix == ".mp4":
+            Writer = writers["ffmpeg"]
+            writer = Writer(fps=self.fps, metadata={}, bitrate=BITRATE)
+            anim.save(str(output_path), writer=writer)
+        else:
+            raise ValueError("Unsupported output format (only .mp4 is supported)")
+        plt.close()
