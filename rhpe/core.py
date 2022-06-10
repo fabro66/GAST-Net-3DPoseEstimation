@@ -29,6 +29,7 @@ class KeyPointLifter(ABC):
 class Frames:
     numpy: np.ndarray  # F, H, W, 3
     path: Path
+    fps: float
 
     @property
     def height(self) -> int:
@@ -45,7 +46,8 @@ class Frames:
         assert cap.isOpened()
         video_len = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         numpy = np.stack([cap.read()[1] for _ in range(video_len)])
-        return cls(numpy, path)
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        return cls(numpy, path, fps)
 
 
 @dataclass

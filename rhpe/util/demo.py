@@ -1,45 +1,25 @@
-from dataclasses import asdict
 from pathlib import Path
 
 import cv2
 import numpy as np
 from rhpe.core import Frames, KeyPointDetector, KeyPointLifter, KeyPoints2D, KeyPoints3D
-from tools.vis_h36m import render_animation
+from rhpe.util.visualize import render_animation
 
 
 def render(
+    frames: Frames,
     keypoints_2d: KeyPoints2D,
     keypoints_3d: KeyPoints3D,
-    movie_path: Path,
     output_dir: Path,
 ):
     prediction = [keypoints_3d.numpy]
     prediction[0][:, :, 2] -= np.amin(prediction[0][:, :, 2])
+    movie_path = frames.path
 
-    same_coord = False
-
-    anim_output = {}
-    for i, anim_prediction in enumerate(prediction):
-        anim_output.update({"Reconstruction %d" % (i + 1): anim_prediction})
-
-    viz_output = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
-    # re_kpts: (M, T, N, 2) --> (T, M, N, 2)
+    output_path = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
     coordinates_2d = keypoints_2d.coordinates[np.newaxis]
     coordinates_2d = coordinates_2d.transpose(1, 0, 2, 3)
-    print("Generating animation ...")
-    render_animation(
-        coordinates_2d,
-        asdict(keypoints_2d.meta),
-        anim_output,
-        keypoints_2d.meta.skeleton,
-        25,
-        30000,
-        np.array(70.0, dtype=np.float32),
-        str(viz_output),
-        input_video_path=str(movie_path),
-        viewport=(keypoints_2d.width, keypoints_2d.height),
-        com_reconstrcution=same_coord,
-    )
+    render_animation(frames, keypoints_2d, keypoints_3d, output_path)
 
 
 def demo_movie(
@@ -52,7 +32,7 @@ def demo_movie(
     frames = Frames.from_path(movie_path)
     keypoints_2d = detector.detect_2d_keypoints(frames)
     keypoints_3d = lifter.lift_up(keypoints_2d)
-    render(keypoints_2d, keypoints_3d, movie_path, output_dir)
+    render(frames, keypoints_2d, keypoints_3d, output_dir)
 
 
 def demo_movie_2d(detector: KeyPointDetector, movie_path: Path, output_dir: Path):
