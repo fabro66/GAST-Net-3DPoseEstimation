@@ -225,11 +225,11 @@ class KeyPoints3DAnimation(Animation):
 class Renderer:
     def __init__(self, animations: list[Animation]):
         assert len(animations) > 0, "no annimation registered"
-        assert reduce(
-            lambda x, y: x == y, map(lambda anim: anim.num_frames, animations)
+        assert all(
+            [anim.num_frames == animations[0].num_frames for anim in animations]
         ), "number of frames of all animations must be the same"
-        assert reduce(
-            lambda x, y: x == y, map(lambda anim: anim.fps, animations)
+        assert all(
+            [anim.fps == animations[0].fps for anim in animations]
         ), "fps of all animations must be the same"
         self.fps = animations[0].fps
         self.num_frames = animations[0].num_frames

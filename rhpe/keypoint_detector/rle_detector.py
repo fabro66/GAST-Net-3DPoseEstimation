@@ -4,7 +4,6 @@ from typing import Protocol, Sequence
 import numpy as np
 import torch
 from rhpe.core import Frames, KeyPointDetector, KeyPoints2D
-from rhpe.keypoints_2d.h36m_keypoints_2d import H36MKeyPoints2D, RevisedH36MKeyPoints2D
 from rhpe.util.transform import CropTransformer
 from rlepose.models import builder
 from rlepose.utils.transforms import heatmap_to_coord, im_to_torch
@@ -19,14 +18,12 @@ class RLEModelOutput(Protocol):
 class RLEKeyPointDetector2D(KeyPointDetector):
     def __init__(
         self,
-        revise: bool = True,
         device: str = "cuda:0",
     ):
         # Only support this input size for now.
         self.input_height, self.input_width = 256, 192
         self.device = device
         self.model = self.load_model(device)
-        self.revise = revise
 
     def load_model(self, device: str) -> nn.Module:
         model = builder.build_sppe(
@@ -115,9 +112,7 @@ class RLEKeyPointDetector2D(KeyPointDetector):
         with torch.no_grad():
             model_output = self.model(model_input)
         coords_original, scores = self.postprocess_frames(model_output, transformer)
-        keypoints_2d = H36MKeyPoints2D.from_coco(
+        keypoints_2d = KeyPoints2D.from_coco(
             coords_original, scores, frames.width, frames.height
         )
-        if self.revise:
-            keypoints_2d = RevisedH36MKeyPoints2D.from_h36m(keypoints_2d)
         return keypoints_2d

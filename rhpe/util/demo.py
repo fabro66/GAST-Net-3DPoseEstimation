@@ -2,28 +2,9 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from rhpe.core import Frames, KeyPointDetector, KeyPointLifter, KeyPoints2D, KeyPoints3D
+from rhpe.core import Frames, KeyPointDetector, KeyPointLifter
+from rhpe.util.transform import normalize_keypoints, revise_keypoints
 from rhpe.util.visualize import KeyPoints2DAnimation, KeyPoints3DAnimation, Renderer
-
-
-def render(
-    frames: Frames,
-    keypoints_2d: KeyPoints2D,
-    keypoints_3d: KeyPoints3D,
-    output_dir: Path,
-):
-    prediction = [keypoints_3d.numpy]
-    prediction[0][:, :, 2] -= np.amin(prediction[0][:, :, 2])
-    movie_path = frames.path
-
-    output_path = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
-    coordinates_2d = keypoints_2d.coordinates[np.newaxis]
-    coordinates_2d = coordinates_2d.transpose(1, 0, 2, 3)
-    animation_2d = KeyPoints2DAnimation(keypoints_2d, frames, True)
-    animation_3d = KeyPoints3DAnimation(keypoints_3d, frames)
-    animations = [animation_2d, animation_3d]
-    renderer = Renderer(animations)
-    renderer.render(output_path)
 
 
 def demo_movie(
@@ -33,10 +14,23 @@ def demo_movie(
     output_dir: Path,
 ):
 
+    # Inference
     frames = Frames.from_path(movie_path)
     keypoints_2d = detector.detect_2d_keypoints(frames)
-    keypoints_3d = lifter.lift_up(keypoints_2d)
-    render(frames, keypoints_2d, keypoints_3d, output_dir)
+    revised_keypoints_2d = revise_keypoints(keypoints_2d)
+    normalized_keypoints_2d = normalize_keypoints(revised_keypoints_2d)
+    keypoints_3d = lifter.lift_up(normalized_keypoints_2d)
+
+    # Animation
+    output_path = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
+    animation_2d = KeyPoints2DAnimation(keypoints_2d, frames, True)
+    animation_2d_normalized = KeyPoints2DAnimation(
+        normalized_keypoints_2d, frames, False
+    )
+    animation_3d = KeyPoints3DAnimation(keypoints_3d, frames)
+    animations = [animation_2d, animation_2d_normalized, animation_3d]
+    renderer = Renderer(animations)
+    renderer.render(output_path)
 
 
 def demo_movie_2d(detector: KeyPointDetector, movie_path: Path, output_dir: Path):

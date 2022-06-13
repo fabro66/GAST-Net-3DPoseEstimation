@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+from common.camera import normalize_minmax_coordinates
+from rhpe.core import KeyPoints2D
 from rlepose.utils.transforms import _box_to_center_scale, get_affine_transform
 
 
@@ -161,3 +163,33 @@ def revise_kpts(
 
     new_h36m_kpts[valid_frames] = kpts
     return new_h36m_kpts
+
+
+def revise_keypoints(keypoints_2d: KeyPoints2D) -> KeyPoints2D:
+    revised_coordinates = revise_kpts(
+        keypoints_2d.coordinates,
+        keypoints_2d.scores,
+        keypoints_2d.valid_frames,
+    )
+    return KeyPoints2D(
+        coordinates=revised_coordinates,
+        scores=keypoints_2d.scores,
+        width=keypoints_2d.width,
+        height=keypoints_2d.height,
+        meta=keypoints_2d.meta,
+        valid_frames=keypoints_2d.valid_frames,
+    )
+
+
+def normalize_keypoints(keypoints_2d: KeyPoints2D) -> KeyPoints2D:
+    norm_kpts = normalize_minmax_coordinates(
+        keypoints_2d.coordinates, w=keypoints_2d.width, h=keypoints_2d.height
+    )
+    return KeyPoints2D(
+        coordinates=norm_kpts,
+        scores=keypoints_2d.scores,
+        width=keypoints_2d.width,
+        height=keypoints_2d.height,
+        meta=keypoints_2d.meta,
+        valid_frames=keypoints_2d.valid_frames,
+    )
