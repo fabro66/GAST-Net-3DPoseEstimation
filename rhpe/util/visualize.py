@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation, writers  # type: ignore
 from rhpe.core import Frames, KeyPoints2D, KeyPoints3D
-from rhpe.util.transform import expand_bbox
+from rhpe.util.transform import expand_bbox, to_rgb
 from tools.color_edge import h36m_color_edge
 from tqdm import tqdm
 
@@ -49,9 +49,12 @@ class KeyPoints2DAnimation(Animation):
         self, keypoints_2d: KeyPoints2D, frames: Frames, background_frame: bool
     ):
         self.background_frame = background_frame
-
+        rgb_frames = to_rgb(frames)
         # Transform keypoints and frames to visualize keypoints outside of images
-        self.keypoints_2d, self.frames = expand_bbox(keypoints_2d, frames)
+        if background_frame:
+            self.keypoints_2d, self.frames = expand_bbox(keypoints_2d, rgb_frames)
+        else:
+            self.keypoints_2d, self.frames = keypoints_2d, rgb_frames
 
         # Rendering State
         self.initialized = False
@@ -72,7 +75,17 @@ class KeyPoints2DAnimation(Animation):
         return "rectilinear"
 
     def init_axes(self, axes: plt.Axes):
-        pass
+        """set xlim and ylim to cover the entire keypoints when background image won't be displayed
+
+        Args:
+            axes (plt.Axes): _description_
+        """
+        if not self.background_frame:
+            coordinates = self.keypoints_2d.coordinates
+            minimum = np.min(coordinates, axis=(0, 1))
+            maximum = np.max(coordinates, axis=(0, 1))
+            axes.set_xlim((minimum[0], maximum[0]))
+            axes.set_ylim((minimum[1], maximum[1]))
 
     def initialize(self, ax: plt.Axes):
         step = 0

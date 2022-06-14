@@ -283,3 +283,13 @@ def expand_bbox(
     )
     new_frames = Frames(numpy=images, path=frames.path, fps=frames.fps)
     return new_keypoints_2d, new_frames
+
+
+def to_rgb(frames: Frames) -> Frames:
+    return Frames(
+        numpy=np.stack(
+            [cv2.cvtColor(frame, cv2.COLOR_RGB2BGR) for frame in frames.numpy]
+        ),
+        path=frames.path,
+        fps=frames.fps,
+    )
