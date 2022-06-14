@@ -24,11 +24,17 @@ def demo_movie(
     # Animation
     output_path = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
     animation_2d = KeyPoints2DAnimation(keypoints_2d, frames, True)
+    animation_2d_revised = KeyPoints2DAnimation(revised_keypoints_2d, frames, False)
     animation_2d_normalized = KeyPoints2DAnimation(
         normalized_keypoints_2d, frames, False
     )
     animation_3d = KeyPoints3DAnimation(keypoints_3d, frames)
-    animations = [animation_2d, animation_2d_normalized, animation_3d]
+    animations = [
+        animation_2d,
+        animation_2d_revised,
+        animation_2d_normalized,
+        animation_3d,
+    ]
     renderer = Renderer(animations)
     renderer.render(output_path)
 
