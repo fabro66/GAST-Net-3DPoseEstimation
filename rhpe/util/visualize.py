@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation, writers  # type: ignore
 from rhpe.core import Frames, KeyPoints2D, KeyPoints3D
+from rhpe.util.transform import expand_bbox
 from tools.color_edge import h36m_color_edge
 from tqdm import tqdm
 
@@ -47,9 +48,10 @@ class KeyPoints2DAnimation(Animation):
     def __init__(
         self, keypoints_2d: KeyPoints2D, frames: Frames, background_frame: bool
     ):
-        self.keypoints_2d = keypoints_2d
-        self.frames = frames
         self.background_frame = background_frame
+
+        # Transform keypoints and frames to visualize keypoints outside of images
+        self.keypoints_2d, self.frames = expand_bbox(keypoints_2d, frames)
 
         # Rendering State
         self.initialized = False
