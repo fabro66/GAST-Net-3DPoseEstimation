@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from functools import reduce
 from pathlib import Path
 
 import numpy as np
@@ -51,6 +50,8 @@ class KeyPoints2DAnimation(Animation):
         self.keypoints_2d = keypoints_2d
         self.frames = frames
         self.background_frame = background_frame
+
+        # Rendering State
         self.initialized = False
         self.lines = list()
         self.points = None
