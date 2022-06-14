@@ -1,14 +1,14 @@
-import torch
-import numpy as np
-import sys
 import os.path as osp
+import sys
 
+import numpy as np
+import torch
 
 pre_dir = osp.join(osp.dirname(osp.realpath(__file__)), "..")
 sys.path.insert(0, pre_dir)
 from common.camera import (
-    normalize_minmax_coordinates,
     camera_to_world,
+    normalize_minmax_coordinates,
     normalize_screen_coordinates,
 )
 from common.generators import *
