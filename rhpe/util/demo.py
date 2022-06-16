@@ -17,21 +17,18 @@ def demo_movie(
     # Inference
     frames = Frames.from_path(movie_path)
     keypoints_2d = detector.detect_2d_keypoints(frames)
-    revised_keypoints_2d = revise_keypoints(keypoints_2d)
-    normalized_keypoints_2d = normalize_keypoints(revised_keypoints_2d)
+    normalized_keypoints_2d = normalize_keypoints(keypoints_2d)
     keypoints_3d = lifter.lift_up(normalized_keypoints_2d)
 
     # Animation
     output_path = output_dir.joinpath(f"demo_{movie_path.stem}.mp4")
     animation_2d = KeyPoints2DAnimation(keypoints_2d, frames, True)
-    animation_2d_revised = KeyPoints2DAnimation(revised_keypoints_2d, frames, False)
     animation_2d_normalized = KeyPoints2DAnimation(
         normalized_keypoints_2d, frames, False
     )
     animation_3d = KeyPoints3DAnimation(keypoints_3d, frames)
     animations = [
         animation_2d,
-        animation_2d_revised,
         animation_2d_normalized,
         animation_3d,
     ]
