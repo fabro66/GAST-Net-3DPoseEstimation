@@ -5,6 +5,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 from rhpe.util.transform import AffineTransformer, get_triangle
+from tqdm import tqdm
 from typing_extensions import Self
 
 MEAN_BBOX_WIDTH = 123
@@ -44,7 +45,7 @@ class COCOCropper:
 
         new_annotations = list()
         new_image_annotations = list()
-        for idx, annotation in enumerate(annotations):
+        for idx, annotation in tqdm(enumerate(annotations)):
             file_name = f"{annotation.image_id:0>12}.jpg"
             img_path = img_in_root.joinpath(file_name)
             img = cv2.imread(str(img_path))
@@ -151,10 +152,13 @@ def transform_keypoints(
 ) -> list[int]:
     x = keypoints[0::3]
     y = keypoints[1::3]
-    v = np.array(keypoints[2::3])
+    v = np.array(keypoints[2::3])[:, np.newaxis]
     coordinates = np.stack([x, y], axis=1)
     new_coordinates = transformer.transform_position(coordinates)
-    new_keypoints = np.concatenate([new_coordinates, v[:, np.newaxis]], axis=1)
+    new_keypoints = np.concatenate([new_coordinates, v], axis=1)
+    new_keypoints = np.where(
+        v == 0, np.array(np.zeros((17, 3), dtype=new_keypoints.dtype)), new_keypoints
+    )
     # TODO make (x, y) = (0, 0) for no annotations
     return new_keypoints.reshape((-1,)).tolist()
 
