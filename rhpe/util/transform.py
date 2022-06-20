@@ -20,7 +20,13 @@ class AffineTransformer:
             [self.matrix, np.array([[0.0, 0.0, 1.0]], dtype=self.matrix.dtype)], axis=0
         )
         self.inv_matrix = cv2.invertAffineTransform(self.matrix)
-        self.inv_matrix_square = np.linalg.inv(self.matrix_square)
+        try:
+            self.inv_matrix_square = np.linalg.inv(self.matrix_square)
+        except np.linalg.LinAlgError:
+            print(
+                "affine matrix is somehow singular. calling inverse operation will result in an error"
+            )
+            self.inv_matrix_square = None
 
     def transform_position(self, positions: np.ndarray) -> np.ndarray:
         """transform positions in original space into position in neuralnet space
@@ -46,6 +52,7 @@ class AffineTransformer:
         Returns:
             np.ndarray: (F, 2) x, y coordinate
         """
+        assert isinstance(self.inv_matrix_square, np.ndarray)
         ones = np.ones((positions.shape[0], 1), dtype=positions.dtype)  # F, 1
         positions_3d = np.concatenate([positions, ones], axis=1)  # F, 3
         transformed_positions_3d = (

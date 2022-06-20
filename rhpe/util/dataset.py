@@ -138,7 +138,7 @@ class ImageAnnotation:
         return cls(
             license=orig_img_annot.license,
             file_name=f"{new_annot.image_id:0>12}.jpg",
-            coco_url="",
+            coco_url=orig_img_annot.coco_url,
             width=new_img.shape[1],
             height=new_img.shape[0],
             date_captured=orig_img_annot.date_captured,
