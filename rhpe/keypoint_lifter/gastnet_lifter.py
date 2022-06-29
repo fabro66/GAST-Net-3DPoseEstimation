@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from common.camera import camera_to_world
 from common.generators import UnchunkedGenerator
 from gen_skes import load_model_layer
@@ -32,11 +33,11 @@ def gen_pose(
 
 
 class GASTNetLifter(KeyPointLifter):
-    def __init__(self, rf=27):
+    def __init__(self, rf=27, device: torch.device | None = None):
         assert rf in [27], f"{rf} is not supported receptive field for the model"
         self.rf = 27
         # Loading 3D pose model
-        self.model_pos: nn.Module = load_model_layer(rf)
+        self.model_pos: nn.Module = load_model_layer(rf, device)
 
     def lift_up(self, keypoints_2d: KeyPoints2D) -> KeyPoints3D:
         pad = (self.rf - 1) // 2  # Padding on each side

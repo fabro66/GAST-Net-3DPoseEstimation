@@ -18,14 +18,14 @@ class RLEModelOutput(Protocol):
 class RLEKeyPointDetector2D(KeyPointDetector):
     def __init__(
         self,
-        device: str = "cuda:0",
+        device: torch.device | None = torch.device("cuda:0"),
     ):
         # Only support this input size for now.
         self.input_height, self.input_width = 256, 192
         self.device = device
         self.model = self.load_model(device)
 
-    def load_model(self, device: str) -> nn.Module:
+    def load_model(self, device: torch.device | None) -> nn.Module:
         model = builder.build_sppe(
             {
                 "TYPE": "RegressFlow",

@@ -175,6 +175,8 @@ data/coco_crop
 data/coco
 final_aligned
 word_aligned_highlevel
+data/video/*
+
 
 # temporary scripts
 temporary_scripts
