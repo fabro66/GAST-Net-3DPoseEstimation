@@ -13,6 +13,7 @@ def demo_movie(
     frames: Frames,
     output_dir: Path,
     expand: bool = True,
+    title: str | None = None,
 ):
 
     # Inference
@@ -29,7 +30,7 @@ def demo_movie(
         animation_2d,
         animation_3d,
     ]
-    renderer = Renderer(animations)
+    renderer = Renderer(animations, title)
     renderer.render(output_path)
 
 

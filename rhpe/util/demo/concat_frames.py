@@ -71,8 +71,15 @@ def vis_linear(start_ratio: float, end_ratio: float, split: int):
     device = torch.device("cuda:3")
     detector = RLEKeyPointDetector2D(device=device)
     lifter = GASTNetLifter(rf=27, device=device)
-    for frames in frames_list:
-        demo_movie(detector, lifter, frames, demo_dir, expand=False)
+    for frames, ratio in zip(frames_list, ratios):
+        demo_movie(
+            detector,
+            lifter,
+            frames,
+            demo_dir,
+            expand=False,
+            title=f"Cut: {int((1 - ratio) * 100)}%",
+        )
 
     # Concate Frames in demo_dir
     concat_frames_list = [

@@ -250,7 +250,7 @@ class KeyPoints3DAnimation(Animation):
 
 
 class Renderer:
-    def __init__(self, animations: list[Animation]):
+    def __init__(self, animations: list[Animation], title: str | None = None):
         assert len(animations) > 0, "no annimation registered"
         assert all(
             [anim.num_frames == animations[0].num_frames for anim in animations]
@@ -262,6 +262,7 @@ class Renderer:
         self.num_frames = animations[0].num_frames
         self.animations = animations
         self.fig = plt.figure()
+        self.fig.suptitle(title)
         self.fig.subplots_adjust(
             left=0, bottom=0, right=1, top=1, wspace=None, hspace=None
         )
