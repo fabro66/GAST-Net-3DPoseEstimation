@@ -65,7 +65,7 @@ class AffineTransformer:
         self,
         src: np.ndarray,
         size: tuple[int, int],
-        border_color: tuple[int, int, int] = BLACK,
+        border_color: tuple[int, int, int] = WHITE,
     ) -> np.ndarray:
         return cv2.warpAffine(
             src, self.matrix, size, flags=cv2.INTER_LINEAR, borderValue=border_color

@@ -176,6 +176,7 @@ data/coco
 final_aligned
 word_aligned_highlevel
 data/video/*
+output
 
 
 # temporary scripts
