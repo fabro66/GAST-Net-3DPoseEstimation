@@ -17,6 +17,7 @@ LINEWIDTH = 3
 EDGECOLOR = "white"
 MAKRER_SIZE = 10
 BITRATE = 30000
+ROTATE_PER_SEC = 0.1
 
 
 class Animation(ABC):
@@ -194,7 +195,7 @@ class KeyPoints3DAnimation(Animation):
         ax.set_zticklabels([])
         ax.dist = 7.5  # type: ignore
 
-    def initialize(self, ax):
+    def initialize(self, ax: plt.Axes):
         step = 0
         kpts3d_frame = self.keypoints_3d.numpy[step]
         parents = self.keypoints_3d.meta.skeleton.parents()
@@ -215,7 +216,11 @@ class KeyPoints3DAnimation(Animation):
             )
         self.initialized = True
 
-    def update(self, step: int):
+    def update(self, ax: plt.Axes, step: int):
+        rotate_per_sec = ROTATE_PER_SEC
+        fps = self.frames.fps
+        rotate = rotate_per_sec * step / fps * 360.0
+        ax.view_init(elev=ELEV, azim=AZIM + rotate)
         kpts3d_frame = self.keypoints_3d.numpy[step]
         parents = self.keypoints_3d.meta.skeleton.parents()
         for joint, parent in zip(range(NUM_JOINTS), parents):
@@ -241,7 +246,7 @@ class KeyPoints3DAnimation(Animation):
         if not self.initialized:
             self.initialize(ax)
         else:
-            self.update(step)
+            self.update(ax, step)
 
 
 class Renderer:
@@ -273,6 +278,7 @@ class Renderer:
         def update(step: int):
             for ax, animation in zip(self.axes, self.animations):
                 animation.render_with_axes(step, ax)
+            return self.fig
 
         anim = FuncAnimation(self.fig, update, frames=tqdm(range(self.num_frames)))  # type: ignore
 
