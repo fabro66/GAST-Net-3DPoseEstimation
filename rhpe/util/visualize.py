@@ -256,6 +256,7 @@ class Renderer:
         self.fps = animations[0].fps
         self.num_frames = animations[0].num_frames
         self.animations = animations
+        self.fig = plt.figure()
         self.fig.subplots_adjust(
             left=0, bottom=0, right=1, top=1, wspace=None, hspace=None
         )
