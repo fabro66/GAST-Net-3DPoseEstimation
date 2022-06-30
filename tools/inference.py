@@ -3,6 +3,7 @@ import sys
 
 import numpy as np
 import torch
+from rhpe.util.device import get_device
 
 pre_dir = osp.join(osp.dirname(osp.realpath(__file__)), "..")
 sys.path.insert(0, pre_dir)
@@ -29,7 +30,7 @@ def evaluate(test_generator, model_pos):
 
             inputs_2d = torch.from_numpy(batch_2d.astype("float32"))
             if torch.cuda.is_available():
-                inputs_2d = inputs_2d.cuda()
+                inputs_2d = inputs_2d.cuda(get_device(model_pos))
 
             # Positional model
             predicted_3d_pos = model_pos(inputs_2d)

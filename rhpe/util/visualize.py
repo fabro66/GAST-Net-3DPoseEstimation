@@ -17,6 +17,7 @@ LINEWIDTH = 3
 EDGECOLOR = "white"
 MAKRER_SIZE = 10
 BITRATE = 30000
+ROTATE_PER_SEC = 0.1
 
 
 class Animation(ABC):
@@ -46,12 +47,16 @@ class Animation(ABC):
 
 class KeyPoints2DAnimation(Animation):
     def __init__(
-        self, keypoints_2d: KeyPoints2D, frames: Frames, background_frame: bool
+        self,
+        keypoints_2d: KeyPoints2D,
+        frames: Frames,
+        background_frame: bool,
+        expand: bool = True,
     ):
         self.background_frame = background_frame
         rgb_frames = to_rgb(frames)
         # Transform keypoints and frames to visualize keypoints outside of images
-        if background_frame:
+        if background_frame and expand:
             self.keypoints_2d, self.frames = expand_bbox(keypoints_2d, rgb_frames)
         else:
             self.keypoints_2d, self.frames = keypoints_2d, rgb_frames
@@ -86,6 +91,8 @@ class KeyPoints2DAnimation(Animation):
             maximum = np.max(coordinates, axis=(0, 1))
             axes.set_xlim((minimum[0], maximum[0]))
             axes.set_ylim((minimum[1], maximum[1]))
+        axes.set_xticks([])
+        axes.set_yticks([])
 
     def initialize(self, ax: plt.Axes):
         step = 0
@@ -180,7 +187,7 @@ class KeyPoints3DAnimation(Animation):
     def init_axes(self, ax: plt.Axes):
         ax.view_init(elev=ELEV, azim=AZIM)
         ax.set_xlim3d([-RADIUS / 2, RADIUS / 2])
-        ax.set_zlim3d([0, RADIUS])
+        ax.set_zlim3d([-RADIUS / 2, RADIUS / 2])
         ax.set_ylim3d([-RADIUS / 2, RADIUS / 2])
         ax.set_aspect("auto")
         ax.set_xticklabels([])
@@ -188,7 +195,7 @@ class KeyPoints3DAnimation(Animation):
         ax.set_zticklabels([])
         ax.dist = 7.5  # type: ignore
 
-    def initialize(self, ax):
+    def initialize(self, ax: plt.Axes):
         step = 0
         kpts3d_frame = self.keypoints_3d.numpy[step]
         parents = self.keypoints_3d.meta.skeleton.parents()
@@ -209,7 +216,11 @@ class KeyPoints3DAnimation(Animation):
             )
         self.initialized = True
 
-    def update(self, step: int):
+    def update(self, ax: plt.Axes, step: int):
+        rotate_per_sec = ROTATE_PER_SEC
+        fps = self.frames.fps
+        rotate = rotate_per_sec * step / fps * 360.0
+        ax.view_init(elev=ELEV, azim=AZIM + rotate)
         kpts3d_frame = self.keypoints_3d.numpy[step]
         parents = self.keypoints_3d.meta.skeleton.parents()
         for joint, parent in zip(range(NUM_JOINTS), parents):
@@ -235,11 +246,11 @@ class KeyPoints3DAnimation(Animation):
         if not self.initialized:
             self.initialize(ax)
         else:
-            self.update(step)
+            self.update(ax, step)
 
 
 class Renderer:
-    def __init__(self, animations: list[Animation]):
+    def __init__(self, animations: list[Animation], title: str | None = None):
         assert len(animations) > 0, "no annimation registered"
         assert all(
             [anim.num_frames == animations[0].num_frames for anim in animations]
@@ -251,6 +262,10 @@ class Renderer:
         self.num_frames = animations[0].num_frames
         self.animations = animations
         self.fig = plt.figure()
+        self.fig.suptitle(title)
+        self.fig.subplots_adjust(
+            left=0, bottom=0, right=1, top=1, wspace=None, hspace=None
+        )
         self.axes = [
             self.fig.add_subplot(
                 1, len(animations), idx + 1, projection=animation.projection
@@ -264,6 +279,7 @@ class Renderer:
         def update(step: int):
             for ax, animation in zip(self.axes, self.animations):
                 animation.render_with_axes(step, ax)
+            return self.fig
 
         anim = FuncAnimation(self.fig, update, frames=tqdm(range(self.num_frames)))  # type: ignore
 

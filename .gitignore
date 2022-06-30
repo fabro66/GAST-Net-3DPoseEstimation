@@ -171,8 +171,13 @@ sandbox
 # data
 data/cmumosei
 data/cmumosi
+data/coco_crop
+data/coco
 final_aligned
 word_aligned_highlevel
+data/video/*
+output
+
 
 # temporary scripts
 temporary_scripts
