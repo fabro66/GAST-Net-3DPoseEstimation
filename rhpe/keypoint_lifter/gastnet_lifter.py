@@ -33,7 +33,7 @@ def gen_pose(
 
 
 class GASTNetLifter(KeyPointLifter):
-    def __init__(self, rf=27, device: torch.device | None = None):
+    def __init__(self, rf: int = 27, device: torch.device | None = None):
         assert rf in [27], f"{rf} is not supported receptive field for the model"
         self.rf = 27
         # Loading 3D pose model
