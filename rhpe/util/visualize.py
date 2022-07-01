@@ -17,7 +17,7 @@ LINEWIDTH = 3
 EDGECOLOR = "white"
 MAKRER_SIZE = 10
 BITRATE = 30000
-ROTATE_PER_SEC = 0.1
+ROTATE_PER_SEC = 0.05
 
 
 class Animation(ABC):
@@ -250,7 +250,12 @@ class KeyPoints3DAnimation(Animation):
 
 
 class Renderer:
-    def __init__(self, animations: list[Animation], title: str | None = None):
+    def __init__(
+        self,
+        animations: list[Animation],
+        title: str | None = None,
+        shape: tuple[int, int] | None = None,
+    ):
         assert len(animations) > 0, "no annimation registered"
         assert all(
             [anim.num_frames == animations[0].num_frames for anim in animations]
@@ -258,6 +263,13 @@ class Renderer:
         assert all(
             [anim.fps == animations[0].fps for anim in animations]
         ), "fps of all animations must be the same"
+        if shape is not None:
+            assert shape[0] * shape[1] == len(
+                animations
+            ), "specified shape is not compatible with the number of animations"
+            assert len(shape) == 2, "shape must be 2 Dimensional"
+        else:
+            shape = (1, len(animations))
         self.fps = animations[0].fps
         self.num_frames = animations[0].num_frames
         self.animations = animations
@@ -267,9 +279,7 @@ class Renderer:
             left=0, bottom=0, right=1, top=1, wspace=None, hspace=None
         )
         self.axes = [
-            self.fig.add_subplot(
-                1, len(animations), idx + 1, projection=animation.projection
-            )
+            self.fig.add_subplot(*shape, idx + 1, projection=animation.projection)
             for idx, animation in enumerate(animations)
         ]
         for ax, animation in zip(self.axes, animations):

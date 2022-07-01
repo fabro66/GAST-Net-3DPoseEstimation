@@ -8,7 +8,6 @@ from rhpe.core import Frames, KeyPointDetector, KeyPoints2D
 sys.path.insert(0, osp.dirname(osp.realpath(__file__)))
 from common.generators import *
 from common.graph_utils import adj_mx_from_skeleton
-
 # from imp_model.gast_net import SpatioTemporalModelOptimized1f
 from common.skeleton import Skeleton
 from tools.utils import get_path
@@ -17,7 +16,7 @@ from torch import nn
 cur_dir, chk_root, data_root, lib_root, output_root = get_path(__file__)
 model_dir = chk_root + "gastnet/"
 sys.path.insert(1, lib_root)
-from lib.pose import gen_video_kpts as hrnet_pose  # type: ignore
+from lib.pose import gen_video_kpts_with_frames as hrnet_pose  # type: ignore
 
 sys.path.pop(1)
 sys.path.pop(0)
@@ -47,9 +46,8 @@ class HRNetDetector(KeyPointDetector):
         self.device = device
 
     def detect_2d_keypoints(self, frames: Frames) -> KeyPoints2D:
-        video = str(frames.path)
         keypoints, scores = hrnet_pose(
-            video, det_dim=416, num_peroson=1, gen_output=True
+            frames, det_dim=416, num_peroson=1, gen_output=True
         )
         return KeyPoints2D.from_coco(
             keypoints[0], scores[0], frames.width, frames.height
