@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pathlib import Path
 from typing import Sequence
 
@@ -73,9 +74,15 @@ def animation_linear(
         for ratio in ratios
     ]
 
+    original_size = (original_frames.height, original_frames.width)
     # Execute estimation and save demo videos
     animations = (
-        np.array([create_animation(detector, lifter, frames) for frames in frames_list])
+        np.array(
+            [
+                create_animation(detector, lifter, frames, original_size)
+                for frames in frames_list
+            ]
+        )
         .T.reshape(-1)
         .tolist()
     )
@@ -113,6 +120,7 @@ def create_animation(
     detector: KeyPointDetector,
     lifter: KeyPointLifter,
     frames: Frames,
+    original_size: tuple[int, int],
 ) -> tuple[Animation, Animation]:
     # Inference
     keypoints_2d = detector.detect_2d_keypoints(frames)
@@ -120,8 +128,33 @@ def create_animation(
     keypoints_3d = lifter.lift_up(normalized_keypoints_2d)
 
     # Animation
+    frames = pad_with_white(frames, original_size)
     animation_2d = KeyPoints2DAnimation(
         keypoints_2d, frames, background_frame=True, expand=False
     )
     animation_3d = KeyPoints3DAnimation(keypoints_3d, frames)
     return animation_2d, animation_3d
+
+
+def pad_with_white(source: Frames, size: tuple[int, int]):
+    height, width = size
+    target = deepcopy(source)
+    if target.height < height:
+        padding = (
+            np.ones(
+                (target.numpy.shape[0], height - target.height, target.width, 3),
+                dtype=source.numpy.dtype,
+            )
+            * 255
+        )
+        target.numpy = np.concatenate([target.numpy, padding], axis=1)
+    if target.width < width:
+        padding = (
+            np.ones(
+                (target.numpy.shape[0], width - target.width, target.height, 3),
+                dtype=source.numpy.dtype,
+            )
+            * 255
+        )
+        target.numpy = np.concatenate([target.numpy, padding], axis=2)
+    return target
