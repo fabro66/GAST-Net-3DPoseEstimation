@@ -2,7 +2,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from rhpe.core import Frames, KeyPointDetector, KeyPointLifter
+from rhpe.core import Frames, KeyPointDetector, KeyPointLifter, KeyPoints3D
 from rhpe.util.transform import normalize_keypoints
 from rhpe.util.visualize import KeyPoints2DAnimation, KeyPoints3DAnimation, Renderer
 
@@ -52,3 +52,16 @@ def demo_movie_2d(detector: KeyPointDetector, movie_path: Path, output_dir: Path
             cv2.circle(frame, kpt, 10, (255, 0, 255))
         writer.write(frame)
     writer.release()
+
+
+def create_opunity_data(
+    detector: KeyPointDetector,
+    lifter: KeyPointLifter,
+    frames: Frames,
+    output_dir: Path,
+):
+    # Inference
+    keypoints_2d = detector.detect_2d_keypoints(frames)
+    normalized_keypoints_2d = normalize_keypoints(keypoints_2d)
+    keypoints_3d = lifter.lift_up(normalized_keypoints_2d)
+    keypoints_3d.save_as_opunity(output_dir)
