@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -33,7 +35,7 @@ class COCOCropper:
         if not annot_out_path.parent.exists():
             annot_out_path.parent.mkdir(parents=True)
 
-        if isinstance(size, int):
+        if size is not None:
             annotations = [
                 Annotation(**dic) for dic in annot_full["annotations"][:size]
             ]
@@ -45,7 +47,11 @@ class COCOCropper:
 
         new_annotations = list()
         new_image_annotations = list()
+        keypoints_coverages = list()
+        widths = list()
+        heights = list()
         for idx, annotation in tqdm(enumerate(annotations)):
+
             file_name = f"{annotation.image_id:0>12}.jpg"
             img_path = img_in_root.joinpath(file_name)
             img = cv2.imread(str(img_path))
@@ -53,14 +59,33 @@ class COCOCropper:
             new_image_annotation = ImageAnnotation.construct(
                 image_annotations[annotation.image_id], new_annotation, new_img
             )
-            save_image(img_out_root.joinpath(file_name), new_img)
-            new_annotations.append(asdict(new_annotation))
-            new_image_annotations.append(asdict(new_image_annotation))
+            new_filename = f"{idx:0>12}.jpg"
+            if self.validate(new_img, new_annotation, new_image_annotation):
+                save_image(img_out_root.joinpath(new_filename), new_img)
+                new_annotations.append(asdict(new_annotation))
+                new_image_annotations.append(asdict(new_image_annotation))
+                keypoints_coverages.append(
+                    self.calculate_keypoints_coverage(new_annotation)
+                )
+                widths.append(new_img.shape[1])
+                heights.append(new_img.shape[0])
 
         annot_full["annotations"] = new_annotations
         annot_full["images"] = new_image_annotations
         with annot_out_path.open("w") as f:
             json.dump(annot_full, f)
+
+        # Attach Statistics File to the parent directory of annot_out_path
+        statistics = CroppedDatasetStatistics(
+            len(annotations),
+            np.mean(widths),
+            np.mean(heights),
+            np.mean(keypoints_coverages),
+        )
+        with annot_out_path.parent.joinpath(
+            f"{annot_out_path.stem}_statistics.json"
+        ).open("w") as f:
+            json.dump(asdict(statistics), f)
 
     def save_cropped_image(self, bboxed_root: Path, size: int):
         with self.annot_out_path.open("r") as f:
@@ -71,12 +96,48 @@ class COCOCropper:
             filename = self.id_to_filename(annotation.image_id)
             path = self.img_out_root.joinpath(filename)
             img = cv2.imread(str(path))
+            self.render_keypoint(img, annotation.keypoints)
             cropped_img = crop_image(img, annotation.bbox)
             sample_path = bboxed_root.joinpath(filename)
             cv2.imwrite(str(sample_path), cropped_img)
 
     def id_to_filename(self, idx: int) -> str:
         return f"{idx:0>12}.jpg"
+
+    def render_keypoint(self, img: np.ndarray, keypoints: list[int]):
+        for i in range(0, len(keypoints), 3):
+            x, y, v = keypoints[i : i + 3]
+            if v != 0:
+                cv2.circle(img, (int(x), int(y)), 2, (255, 0, 255))
+
+    def validate(
+        self, img: np.ndarray, annot: Annotation, img_annot: ImageAnnotation
+    ) -> bool:
+        visibilities = annot.keypoints[2::3]
+        return sum(visibilities) > 0
+
+    def calculate_keypoints_coverage(self, annotation: Annotation) -> float:
+        keypoints = annotation.keypoints
+        xmin, ymin, width, height = annotation.bbox
+        covered = 0
+        visible = 0
+        for i in range(0, len(keypoints), 3):
+            x, y, v = keypoints[i : i + 3]
+            visible += int(v > 0)
+            covered += int(
+                xmin <= x <= xmin + width and ymin <= y <= ymin + height and v > 0
+            )
+        assert visible > 0
+        assert covered <= visible
+        return covered / visible
+
+
+@dataclass
+class CroppedDatasetStatistics:
+    size: int
+    mean_width: float
+    mean_height: float
+    keypoints_coverage: float
 
 
 @dataclass
@@ -224,7 +285,7 @@ def crop_data(
         annotation.area,
         annotation.iscrowd,
         new_keypoints,
-        annotation.image_id,
+        idx,
         new_bbox,
         annotation.category_id,
         idx,
