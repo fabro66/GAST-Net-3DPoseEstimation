@@ -115,15 +115,3 @@ class KeyPoints3D:
 
     def camera_to_world(self, rot: np.ndarray, t: int) -> np.ndarray:
         return camera_to_world(self.numpy, R=rot, t=t)
-
-    def save_as_opunity(self, output_root: Path):
-        SCALE = 1000
-
-        kpts = self.numpy * SCALE
-        for i, frame in enumerate(kpts):
-            target = frame.transpose([1, 0]).tolist()
-            path = output_root.joinpath(f"{i}.txt")
-            with path.open("w") as f:
-                rows = [f'[{" ".join(map(str, arr))}]' for arr in target]
-                opunity = f'[[{" ".join(rows)}]]'
-                f.write(opunity)
