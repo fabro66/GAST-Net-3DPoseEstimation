@@ -18,14 +18,19 @@ class RLEModelOutput(Protocol):
 class RLEKeyPointDetector2D(KeyPointDetector):
     def __init__(
         self,
+        ckpt_path: Path = Path().joinpath("pretrained_model", "coco-laplace-rle.pth"),
         device: torch.device | None = torch.device("cuda:0"),
     ):
         # Only support this input size for now.
         self.input_height, self.input_width = 256, 192
         self.device = device
-        self.model = self.load_model(device)
+        self.model = self.load_model(ckpt_path, device)
 
-    def load_model(self, device: torch.device | None) -> nn.Module:
+    def load_model(
+        self,
+        model_path: Path,
+        device: torch.device | None,
+    ) -> nn.Module:
         model = builder.build_sppe(
             {
                 "TYPE": "RegressFlow",
@@ -43,7 +48,6 @@ class RLEKeyPointDetector2D(KeyPointDetector):
                 "HEATMAP_SIZE": [64, 48],
             },
         )
-        model_path = Path().joinpath("pretrained_model", "coco-laplace-rle.pth")
         model.load_state_dict(torch.load(model_path, map_location=device))
         return model
 
