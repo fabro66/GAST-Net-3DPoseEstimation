@@ -1,12 +1,10 @@
-from typing import TypeAlias
-
 import cv2
 import numpy as np
 from common.camera import normalize_minmax_coordinates
 from rhpe.core import Frames, KeyPoints2D
 from rlepose.utils.transforms import _box_to_center_scale, get_affine_transform
 
-BBox: TypeAlias = tuple[float, float, float, float]
+BBox = tuple[float, float, float, float]
 
 
 class AffineTransformer:
@@ -139,10 +137,7 @@ def crop_img(img: np.ndarray, bbox: np.ndarray) -> np.ndarray:
     )
     transform = get_affine_transform(center, scale, 0.0, (xmax - xmin, ymax - ymin))
     cropped = cv2.warpAffine(
-        img,
-        transform,
-        (xmax - xmin, ymax - ymin),
-        flags=cv2.INTER_LINEAR,
+        img, transform, (xmax - xmin, ymax - ymin), flags=cv2.INTER_LINEAR,
     )
     return cropped
 
@@ -198,9 +193,7 @@ def revise_kpts(
 
 def revise_keypoints(keypoints_2d: KeyPoints2D) -> KeyPoints2D:
     revised_coordinates = revise_kpts(
-        keypoints_2d.coordinates,
-        keypoints_2d.scores,
-        keypoints_2d.valid_frames,
+        keypoints_2d.coordinates, keypoints_2d.scores, keypoints_2d.valid_frames,
     )
     return KeyPoints2D(
         coordinates=revised_coordinates,

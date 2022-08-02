@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import torch
 from common.camera import camera_to_world
@@ -33,7 +35,7 @@ def gen_pose(
 
 
 class GASTNetLifter(KeyPointLifter):
-    def __init__(self, rf: int = 27, device: torch.device | None = None):
+    def __init__(self, rf: int = 27, device: Optional[torch.device] = None):
         assert rf in [27], f"{rf} is not supported receptive field for the model"
         self.rf = 27
         # Loading 3D pose model
@@ -44,10 +46,5 @@ class GASTNetLifter(KeyPointLifter):
         causal_shift = 0
 
         # Generating 3D poses
-        prediction = gen_pose(
-            keypoints_2d,
-            self.model_pos,
-            pad,
-            causal_shift,
-        )
+        prediction = gen_pose(keypoints_2d, self.model_pos, pad, causal_shift,)
         return KeyPoints3D(prediction, keypoints_2d.meta)

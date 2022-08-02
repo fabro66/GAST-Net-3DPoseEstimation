@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -116,14 +117,8 @@ class KeyPoints2DAnimation(Animation):
             # Draw 2D Bones
             self.lines.append(
                 ax.plot(
-                    [
-                        kpts2d_frame[joint, 0],
-                        kpts2d_frame[parent, 0],
-                    ],
-                    [
-                        kpts2d_frame[joint, 1],
-                        kpts2d_frame[parent, 1],
-                    ],
+                    [kpts2d_frame[joint, 0], kpts2d_frame[parent, 0],],
+                    [kpts2d_frame[joint, 1], kpts2d_frame[parent, 1],],
                     color="pink",
                 )
             )
@@ -144,14 +139,8 @@ class KeyPoints2DAnimation(Animation):
 
             # Change 2D Lines
             self.lines[joint - 1][0].set_data(
-                [
-                    kpts2d_frame[joint, 0],
-                    kpts2d_frame[parent, 0],
-                ],
-                [
-                    kpts2d_frame[joint, 1],
-                    kpts2d_frame[parent, 1],
-                ],
+                [kpts2d_frame[joint, 0], kpts2d_frame[parent, 0],],
+                [kpts2d_frame[joint, 1], kpts2d_frame[parent, 1],],
             )
 
     def render_with_axes(self, step: int, ax: plt.Axes):
@@ -253,8 +242,8 @@ class Renderer:
     def __init__(
         self,
         animations: list[Animation],
-        title: str | None = None,
-        shape: tuple[int, int] | None = None,
+        title: Optional[str] = None,
+        shape: Optional[tuple[int, int]] = None,
     ):
         assert len(animations) > 0, "no annimation registered"
         assert all(

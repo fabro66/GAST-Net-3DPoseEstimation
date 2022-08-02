@@ -1,5 +1,6 @@
 import os.path as osp
 import sys
+from typing import Optional
 
 import torch
 from model.gast_net import SpatioTemporalModel
@@ -40,7 +41,7 @@ keypoints_metadata = {
 class HRNetDetector(KeyPointDetector):
     def __init__(
         self,
-        device: torch.device | None = torch.device("cuda:0"),
+        device: Optional[torch.device] = torch.device("cuda:0"),
     ):
         # Only support this input size for now.
         self.device = device
@@ -54,7 +55,7 @@ class HRNetDetector(KeyPointDetector):
         )
 
 
-def load_model_layer(rf: int = 27, device: torch.device | None = None) -> nn.Module:
+def load_model_layer(rf: int = 27, device: Optional[torch.device] = None) -> nn.Module:
     if rf == 27:
         chk = model_dir + "27_frame_model.bin"
         filters_width = [3, 3, 3]

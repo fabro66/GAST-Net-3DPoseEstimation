@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -23,7 +24,7 @@ class COCOCropper:
     crop_range: tuple[float, float] = (0.2, 0.5)
     crop_prop: float = 1.0
 
-    def create(self, size: int | None):
+    def create(self, size: Optional[int]):
         annot_in_path = self.annot_in_path
         annot_out_path = self.annot_out_path
         img_in_root = self.img_in_root

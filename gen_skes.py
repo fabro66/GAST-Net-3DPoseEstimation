@@ -1,6 +1,7 @@
 import argparse
 import os.path as osp
 import sys
+from typing import Optional
 
 import cv2
 import torch
@@ -81,7 +82,7 @@ def load_model_realtime(rf=81):
     return model_pos
 
 
-def load_model_layer(rf: int = 27, device: torch.device | None = None):
+def load_model_layer(rf: int = 27, device: Optional[torch.device] = None):
     if rf == 27:
         chk = model_dir + "27_frame_model.bin"
         filters_width = [3, 3, 3]

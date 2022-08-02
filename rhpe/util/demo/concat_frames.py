@@ -1,6 +1,6 @@
 from copy import deepcopy
 from pathlib import Path
-from typing import Sequence
+from typing import Optional, Sequence
 
 import cv2
 import numpy as np
@@ -94,7 +94,7 @@ def vis_linear_comparison(
     end: float,
     split: int,
     root_dir: Path,
-    device: torch.device | None = torch.device("cuda:0"),
+    device: Optional[torch.device] = torch.device("cuda:0"),
 ):
     # Setup Path
     original_files = list(root_dir.joinpath("original").iterdir())

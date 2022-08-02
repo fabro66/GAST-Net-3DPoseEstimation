@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Protocol, Sequence
+from typing import Optional, Protocol, Sequence
 
 import numpy as np
 import torch
@@ -19,7 +19,7 @@ class RLEKeyPointDetector2D(KeyPointDetector):
     def __init__(
         self,
         ckpt_path: Path = Path().joinpath("pretrained_model", "coco-laplace-rle.pth"),
-        device: torch.device | None = torch.device("cuda:0"),
+        device: Optional[torch.device] = torch.device("cuda:0"),
     ):
         # Only support this input size for now.
         self.input_height, self.input_width = 256, 192
@@ -27,9 +27,7 @@ class RLEKeyPointDetector2D(KeyPointDetector):
         self.model = self.load_model(ckpt_path, device)
 
     def load_model(
-        self,
-        model_path: Path,
-        device: torch.device | None,
+        self, model_path: Path, device: Optional[torch.device],
     ) -> nn.Module:
         model = builder.build_sppe(
             {
