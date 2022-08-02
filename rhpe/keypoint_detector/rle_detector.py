@@ -3,11 +3,14 @@ from typing import Optional, Protocol, Sequence
 
 import numpy as np
 import torch
+from lib.pose.hrnet.lib.utils.transforms import transform_preds
+from lib.pose.hrnet.pose_estimation.gen_kpts import detect_bbox
 from rhpe.core import Frames, KeyPointDetector, KeyPoints2D
 from rhpe.util.transform import CropTransformer
 from rlepose.models import builder
 from rlepose.utils.transforms import heatmap_to_coord, im_to_torch
 from torch import nn
+from tqdm import tqdm
 
 
 class RLEModelOutput(Protocol):
@@ -107,14 +110,33 @@ class RLEKeyPointDetector2D(KeyPointDetector):
         return coords_original, scores
 
     def detect_2d_keypoints(self, frames: Frames) -> KeyPoints2D:
-        original_size = (frames.width, frames.height)  # x, y not y, x
-        input_size = (self.input_width, self.input_height)  # x, y not y, x
-        transformer = CropTransformer(original_size, input_size)
-        model_input = self.preprocess_frames(frames, transformer)
+        # original_size = (frames.width, frames.height)  # x, y not y, x
+        # input_size = (self.input_width, self.input_height)  # x, y not y, x
+        # transformer = CropTransformer(original_size, input_size)
+        # model_input = self.preprocess_frames(frames, transformer)
+        model_input_size = (self.input_width, self.input_height)
+        model_inputs, centers, scales = detect_bbox(frames, model_input_size)
         with torch.no_grad():
-            model_output = self.model(model_input)
-        coords_original, scores = self.postprocess_frames(model_output, transformer)
+            model_outputs: list[RLEModelOutput] = [
+                self.model(model_input)
+                for model_input in tqdm(
+                    model_inputs, desc="[Detecting 2d keypoints...]"
+                )
+            ]
+
+        coords = list()
+        for model_output, center, scale in zip(model_outputs, centers, scales):
+            bbox = np.array([0, 0, self.input_width, self.input_height])
+            input_space_coords = (model_output.pred_jts + 0.5) * np.array(
+                [self.input_width, self.input_height]
+            )
+            coords.append(
+                transform_preds(input_space_coords[0], center, scale, model_input_size)
+            )
+        scores = np.stack(
+            [model_output.maxvals[0, :, 0] for model_output in model_outputs]
+        )
         keypoints_2d = KeyPoints2D.from_coco(
-            coords_original, scores, frames.width, frames.height
+            np.array(coords), scores, frames.width, frames.height
         )
         return keypoints_2d

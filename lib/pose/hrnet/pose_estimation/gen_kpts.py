@@ -2,10 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import argparse
 import json
-import os
-import os.path as osp
 import sys
-import time
 
 import cv2
 import models
@@ -17,7 +14,7 @@ from rhpe.core import Frames
 from tqdm import tqdm
 from utils.inference import get_final_preds
 from utils.transforms import *
-from utils.utilitys import PreProcess, load_json, plot_keypoint, write
+from utils.utilitys import PreProcess, plot_keypoint, write
 
 import _init_paths
 from _init_paths import get_path
@@ -189,7 +186,7 @@ def gen_img_kpts(
     with torch.no_grad():
         # bbox is coordinate location
         inputs, origin_img, center, scale = PreProcess(
-            image, bboxs_track, cfg, num_peroson
+            image, bboxs_track, cfg.MODEL.IMAGE_SIZE, num_peroson
         )
         inputs = inputs[:, [2, 1, 0]]
 
@@ -277,7 +274,7 @@ def gen_video_kpts(video, det_dim=416, num_peroson=1, gen_output=False):
         with torch.no_grad():
             # bbox is coordinate location
             inputs, origin_img, center, scale = PreProcess(
-                frame, track_bboxs, cfg, num_peroson
+                frame, track_bboxs, cfg.MODEL.IMAGE_SIZE, num_peroson
             )
             inputs = inputs[:, [2, 1, 0]]
 
@@ -378,7 +375,7 @@ def generate_ntu_kpts_json(video_path, kpts_file):
 
             # bbox is coordinate location
             inputs, origin_img, center, scale = PreProcess(
-                frame, bboxs, cfg, args.num_person
+                frame, bboxs, cfg.MODEL.IMAGE_SIZE, args.num_person
             )
             inputs = inputs[:, [2, 1, 0]]
             if torch.cuda.is_available():
@@ -476,7 +473,7 @@ def gen_video_kpts_with_frames(
         with torch.no_grad():
             # bbox is coordinate location
             inputs, origin_img, center, scale = PreProcess(
-                frame, track_bboxs, cfg, num_peroson
+                frame, track_bboxs, cfg.MODEL.IMAGE_SIZE, num_peroson
             )
             inputs = inputs[:, [2, 1, 0]]
 
@@ -519,3 +516,61 @@ def gen_video_kpts_with_frames(
         keypoints = keypoints.transpose(1, 0, 2, 3)  # (T, M, N, 2) --> (M, T, N, 2)
         scores = scores.transpose(1, 0, 2)  # (T, M, N) --> (M, T, N)
         return keypoints, scores
+
+
+def detect_bbox(
+    frames: Frames, model_image_size: tuple[int, int], det_dim: int = 416
+) -> tuple[list[np.ndarray], list[np.ndarray], list[np.ndarray]]:
+    # assume num_person = 1
+    num_person = 1
+    # Updating configuration
+    args = parse_args()
+    reset_config(args)
+
+    # Loading detector and pose model, initialize sort for track
+    human_model = yolo_model(inp_dim=det_dim)
+    people_sort = Sort()
+
+    input_tensors = list()
+    centers = list()
+    scales = list()
+
+    for frame in tqdm(frames.numpy):
+        try:
+            bboxs, _scores = yolo_det(
+                frame, human_model, reso=det_dim, confidence=args.thred_score
+            )
+
+            if bboxs is None or not bboxs.any():
+                print("No person detected!")
+                continue
+
+            # Using Sort to track people
+            people_track = people_sort.update(bboxs)
+
+            # Track the first two people in the video and remove the ID
+            if people_track.shape[0] == 1:
+                people_track_ = people_track[-1, :-1].reshape(1, 4)
+            elif people_track.shape[0] >= 2:
+                people_track_ = people_track[-num_person:, :-1].reshape(num_person, 4)
+                people_track_ = people_track_[::-1]
+            else:
+                continue
+
+            track_bboxs: list[list[float]] = []
+            for bbox in people_track_:
+                bbox = [round(i, 2) for i in list(bbox)]
+                track_bboxs.append(bbox)
+        except Exception as e:
+            print(e)
+            exit(0)
+        # bbox is coordinate location
+        inputs, _origin_img, center, scale = PreProcess(
+            frame, bboxs, model_image_size, args.num_person
+        )
+        inputs = inputs[:, [2, 1, 0]]
+        assert len(center) == len(scale) == 1
+        input_tensors.append(inputs)
+        centers.append(center[0])
+        scales.append(scale[0])
+    return input_tensors, centers, scales
